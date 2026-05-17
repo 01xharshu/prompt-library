@@ -78,8 +78,8 @@ export default function LoyaltyFeature() {
   ];
 
   return (
-    <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-gray-200">
-      <div className="w-full max-w-5xl mx-auto flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
+    <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-gray-200 flex justify-center px-4 sm:px-6 lg:px-0">
+      <div className="w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
         
         {/* Left Column: Content */}
         <div className="w-full lg:w-[45%] flex flex-col relative px-6 py-12 md:px-10 lg:py-16 justify-between min-h-[60vh] lg:min-h-[650px]">

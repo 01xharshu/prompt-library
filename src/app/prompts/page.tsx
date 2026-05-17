@@ -109,7 +109,7 @@ export default function PromptsFeed() {
     <div className="relative min-h-screen bg-white text-neutral-900 font-sans overflow-x-hidden">
       
       {/* Back to Home Button (Top Left) */}
-      <div className="fixed top-8 left-8 z-40 select-none">
+      <div className="absolute sm:fixed top-6 left-6 sm:top-8 sm:left-8 z-40 select-none">
         <Link
           href="/"
           className="btn-scalloped btn-scalloped-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm"
@@ -118,7 +118,7 @@ export default function PromptsFeed() {
           Gateway
         </Link>
       </div>
-
+ 
       {/* D. Page Header Block */}
       <header className="w-full max-w-6xl mx-auto px-6 pt-28 pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight uppercase text-neutral-950 leading-[0.9] mb-4">
@@ -128,7 +128,7 @@ export default function PromptsFeed() {
           Curated Production-Ready AI Prompts
         </p>
       </header>
-
+ 
       {/* E. Pinterest Masonry Feed Grid */}
       <main className="w-full max-w-7xl mx-auto px-6 pb-40 relative z-20">
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
@@ -145,7 +145,7 @@ export default function PromptsFeed() {
                 alt={item.title}
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02] rounded-[1.8rem]"
               />
-
+ 
               {/* Hover UI overlay ON the image - Fades in copy button and truncated title */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-5 rounded-[1.8rem]">
                 
@@ -166,7 +166,7 @@ export default function PromptsFeed() {
                     )}
                   </button>
                 </div>
-
+ 
                 {/* Bottom: Truncated Title with .. if too long */}
                 <div className="text-left select-none">
                   <span className="text-[9px] font-bold tracking-widest uppercase text-neutral-400 mb-1 block">
@@ -176,16 +176,16 @@ export default function PromptsFeed() {
                     {item.title.length > 25 ? `${item.title.substring(0, 22)}..` : item.title}
                   </h3>
                 </div>
-
+ 
               </div>
             </div>
           ))}
-
+ 
         </div>
       </main>
-
-      {/* F. Fixed Gimmick Counter (Bottom Right) */}
-      <footer className="fixed bottom-8 right-8 z-40 select-none pointer-events-auto">
+ 
+      {/* F. Fixed Gimmick Counter (Bottom Right - hidden on mobile for ideal responsiveness) */}
+      <footer className="hidden sm:block fixed bottom-8 right-8 z-40 select-none pointer-events-auto">
         <div className="px-6 py-5 rounded-2xl flex flex-col justify-center items-start bg-white/95 border border-neutral-200/80 backdrop-blur-md shadow-[0_15px_40px_rgba(0,0,0,0.06)] relative overflow-hidden shrink-0 min-w-[200px]">
           {/* Glowing static green dot in the top right corner */}
           <div className="absolute top-4.5 right-4.5 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
