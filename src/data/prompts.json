@@ -1,0 +1,62 @@
+[
+  {
+    "id": "portrait",
+    "title": "Gabriel's Portrait Lighting",
+    "category": "Midjourney",
+    "description": "Generates high-fashion studio portraits with soft, natural Rembrandt lighting and elegant white turtleneck aesthetics.",
+    "promptText": "photorealistic studio portrait of a blonde woman in a white turtleneck, soft rembrandt lighting, shot on 85mm lens, f/1.8, neutral minimalist background, highly detailed skin texture, 8k resolution --ar 3:4 --style raw",
+    "imagePath": "/prompt-images/prompt_portrait.png",
+    "aspectRatio": "aspect-[3/4]",
+    "views": "1,245",
+    "saves": "418",
+    "author": {
+      "name": "Gabriel Alcaide",
+      "avatar": "GA"
+    }
+  },
+  {
+    "id": "neon",
+    "title": "Retro-Future Neon Streets",
+    "category": "Midjourney",
+    "description": "Generates vibrant retro-futuristic urban landscapes with rain reflections and holographic billboards.",
+    "promptText": "cinematic shot of a cyberpunk city street at night, heavy rain, glowing neon signs reflecting in puddles, giant pink holographic billboards, retrofuturism, shot on 35mm, highly detailed --ar 9:16 --v 6.0",
+    "imagePath": "/prompt-images/prompt_neon.png",
+    "aspectRatio": "aspect-[9/16]",
+    "views": "3,892",
+    "saves": "912",
+    "author": {
+      "name": "Neon Dreamer",
+      "avatar": "ND"
+    }
+  },
+  {
+    "id": "product",
+    "title": "Minimalist Skincare Mockup",
+    "category": "DALL-E 3",
+    "description": "Generates minimalist product photography of cosmetics or bottles with direct afternoon sunlight and leaf shadows.",
+    "promptText": "aesthetic minimalist product photography of a glass perfume bottle on a concrete block, direct warm afternoon sunlight, sharp plant leaf shadows on the background, neutral earthy tones, high-end editorial look --ar 4:5",
+    "imagePath": "/prompt-images/prompt_product.png",
+    "aspectRatio": "aspect-[4/5]",
+    "views": "856",
+    "saves": "244",
+    "author": {
+      "name": "Aria Vance",
+      "avatar": "AV"
+    }
+  },
+  {
+    "id": "workspace",
+    "title": "Cozy Lo-Fi Desk Setup",
+    "category": "Midjourney",
+    "description": "Generates cozy, warm, and highly atmospheric programming workspaces with lo-fi desk aesthetics.",
+    "promptText": "cozy programming setup in a warm room at night, mechanical keyboard glowing, curved monitor showing elegant code, small desk plant, warm mug of tea with steam, ambient retro desk lamp lighting, lofi aesthetic --ar 1:1",
+    "imagePath": "/prompt-images/prompt_workspace.png",
+    "aspectRatio": "aspect-square",
+    "views": "2,109",
+    "saves": "678",
+    "author": {
+      "name": "Code Craft",
+      "avatar": "CC"
+    }
+  }
+]
