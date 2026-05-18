@@ -23,10 +23,93 @@ interface PromptItem {
   };
 }
 
-export default function PromptsFeed() {
-  // Gimmick Live Prompt Counter State
-  const [promptsCount, setPromptsCount] = useState(142854);
+interface PromptCardProps {
+  item: PromptItem;
+  copiedId: string | null;
+  copyToClipboard: (text: string, id: string) => void;
+  setActivePrompt: (item: PromptItem) => void;
+}
 
+function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: PromptCardProps) {
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div
+      onClick={() => setActivePrompt(item)}
+      className="break-inside-avoid mb-6 rounded-[1.8rem] border border-neutral-100 bg-[#f6f6f8] border-[10px] border-white shadow-[0_8px_30px_rgba(0,0,0,0.03)] cursor-pointer group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_12px_35px_rgba(0,0,0,0.06)] relative overflow-hidden"
+    >
+      {/* Aspect-ratio preserving wrapper */}
+      <div
+        className="w-full bg-neutral-100/70 rounded-[1.2rem] overflow-hidden relative"
+        style={{
+          aspectRatio: aspectRatio ? `${aspectRatio}` : "4/3",
+          transition: "aspect-ratio 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
+        }}
+      >
+        <img
+          src={item.imagePath}
+          alt={item.title}
+          className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }`}
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth && img.naturalHeight) {
+              setAspectRatio(img.naturalWidth / img.naturalHeight);
+              setLoaded(true);
+            }
+          }}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
+            setAspectRatio(1.5);
+            setLoaded(true);
+          }}
+        />
+
+        {!loaded && (
+          <div className="absolute inset-0 bg-neutral-100/80 animate-pulse rounded-[1.2rem]" />
+        )}
+      </div>
+
+      {/* Hover UI overlay ON the card */}
+      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-5 rounded-[1.8rem]">
+
+        {/* Top: Quick Copy Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Avoid opening the modal!
+              copyToClipboard(item.promptText, item.id);
+            }}
+            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95"
+            title="Copy Prompt"
+          >
+            {copiedId === item.id ? (
+              <Check className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <Copy className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+
+        {/* Bottom: Truncated Title */}
+        <div className="text-left select-none">
+          {item.category && (
+            <span className="text-[9px] font-bold tracking-widest uppercase text-neutral-300 mb-1 block">
+              {item.category}
+            </span>
+          )}
+          <h3 className="text-base font-black text-white tracking-tight leading-tight">
+            {item.title.length > 25 ? `${item.title.substring(0, 22)}..` : item.title}
+          </h3>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+export default function PromptsFeed() {
   // Mapped Live Prompts State
   const [prompts, setPrompts] = useState<PromptItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,31 +124,6 @@ export default function PromptsFeed() {
   // Copied Alert State (tracks which item id has just been copied)
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Live Gimmick Counter update loop (Organic intervals)
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    const scheduleUpdate = () => {
-      // Random delay between 3.5 and 7.5 seconds
-      const nextDelay = Math.random() * 4000 + 3500;
-
-      timeoutId = setTimeout(() => {
-        // Random increment of 1, 2, or 3 prompts added
-        const increment = Math.floor(Math.random() * 3) + 1;
-        setPromptsCount(prev => prev + increment);
-        
-        // Recursive schedule
-        scheduleUpdate();
-      }, nextDelay);
-    };
-
-    scheduleUpdate();
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
   // Fetch prompts from GitHub JSON API with local fallback
   useEffect(() => {
     const fetchPrompts = async () => {
@@ -77,15 +135,15 @@ export default function PromptsFeed() {
           throw new Error(`Failed to fetch live prompts (Status ${response.status})`);
         }
         const data = await response.json();
-        
+
         // Map simplified API shape (id, image, prompt) to rich PromptItem layout
         const mappedData = data.map((item: any) => {
           const promptText = item.prompt || "";
           const id = String(item.id || Math.random());
           const imagePath = item.image || "";
-          
+
           let title = "AI Prompt Asset";
-          let category = "3D Render";
+          let category = item.category || "";
           let description = "A high-quality generated AI prompt.";
           let avatar = "AI";
           let authorName = "Prompt Architect";
@@ -93,13 +151,11 @@ export default function PromptsFeed() {
           const lowerPrompt = promptText.toLowerCase();
           if (lowerPrompt.includes("discord")) {
             title = "Inflatable Discord Logo";
-            category = "Midjourney";
             description = "Generates a realistic 3D inflatable logo of Discord, designed as a soft, air-filled pillow icon with a soft fabric texture.";
             avatar = "DC";
             authorName = "Discord Designer";
           } else if (lowerPrompt.includes("figma")) {
             title = "Translucent Figma Logo";
-            category = "DALL-E 3";
             description = "Generates a 3D glass translucent Figma logo with slightly rounded edges on a clean white background.";
             avatar = "FG";
             authorName = "Figma Artist";
@@ -139,12 +195,12 @@ export default function PromptsFeed() {
       } catch (err: any) {
         console.error("Failed to load live prompts feed:", err);
         setError(err.message || "Network error fetching prompts library.");
-        
+
         // Graceful fallback to gorgeous local prompts so page is never broken!
         const localMapped = promptData.map((item: any) => ({
           id: item.id || String(Math.random()),
           title: item.title || "AI Prompt Asset",
-          category: item.category || "General",
+          category: item.category || "",
           description: item.description || "",
           promptText: item.promptText || "",
           imagePath: item.imagePath || "",
@@ -171,7 +227,7 @@ export default function PromptsFeed() {
 
   // Toggle Save Prompt
   const toggleSave = (id: string) => {
-    setSavedPromptIds(prev => 
+    setSavedPromptIds(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
   };
@@ -208,7 +264,7 @@ export default function PromptsFeed() {
 
   return (
     <div className="relative min-h-screen bg-white text-neutral-900 font-sans overflow-x-hidden">
-      
+
       {/* Back to Home Button (Top Left) */}
       <div className="absolute sm:fixed top-6 left-6 sm:top-8 sm:left-8 z-40 select-none">
         <Link
@@ -219,7 +275,7 @@ export default function PromptsFeed() {
           Gateway
         </Link>
       </div>
-  
+
       {/* D. Page Header Block */}
       <header className="w-full max-w-6xl mx-auto px-6 pt-28 pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight uppercase text-neutral-950 leading-[0.9] mb-4">
@@ -228,31 +284,11 @@ export default function PromptsFeed() {
         <p className="text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-neutral-500 font-bold max-w-lg mt-1 select-none">
           Curated Production-Ready AI Prompts
         </p>
-
-        {/* Live Synchronizer / Fallback Status Badge */}
-        <div className="mt-4 flex items-center justify-center gap-2">
-          {loading ? (
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-neutral-100 text-neutral-500 border border-neutral-200/60 select-none animate-pulse">
-              <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
-              Synchronizing Live API...
-            </span>
-          ) : error ? (
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200/60 select-none">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              Local Cache Fallback
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/60 select-none">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]" />
-              GitHub Live API Connected
-            </span>
-          )}
-        </div>
       </header>
-  
+
       {/* E. Pinterest Masonry Feed Grid */}
       <main className="w-full max-w-7xl mx-auto px-6 pb-40 relative z-20">
-        
+
         {loading ? (
           /* Premium Masonry Loading Skeletons */
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
@@ -281,77 +317,19 @@ export default function PromptsFeed() {
         ) : (
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
             {prompts.map((item) => (
-              <div
+              <PromptCard
                 key={item.id}
-                onClick={() => setActivePrompt(item)}
-                className="break-inside-avoid mb-6 rounded-[1.8rem] border border-white/10 bg-[#f6f6f8] border-[10px] border-white shadow-[0_12px_40px_-8px_rgba(0,0,0,0.08)] cursor-pointer group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] relative overflow-hidden"
-              >
-                {/* Image in its natural aspect ratio */}
-                <img
-                  src={item.imagePath}
-                  alt={item.title}
-                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02] rounded-[1.8rem]"
-                  onError={(e) => {
-                    // Fallback to placeholder if external domain fails to fetch or render
-                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
-                  }}
-                />
-   
-                {/* Hover UI overlay ON the image - Fades in copy button and truncated title */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-5 rounded-[1.8rem]">
-                  
-                  {/* Top: Quick Copy Button */}
-                  <div className="flex justify-end">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Avoid opening the modal!
-                        copyToClipboard(item.promptText, item.id);
-                      }}
-                      className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95"
-                      title="Copy Prompt"
-                    >
-                      {copiedId === item.id ? (
-                        <Check className="w-4 h-4 text-emerald-400" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-   
-                  {/* Bottom: Truncated Title with .. if too long */}
-                  <div className="text-left select-none">
-                    <span className="text-[9px] font-bold tracking-widest uppercase text-neutral-400 mb-1 block">
-                      {item.category}
-                    </span>
-                    <h3 className="text-base font-black text-white tracking-tight leading-tight">
-                      {item.title.length > 25 ? `${item.title.substring(0, 22)}..` : item.title}
-                    </h3>
-                  </div>
-   
-                </div>
-              </div>
+                item={item}
+                copiedId={copiedId}
+                copyToClipboard={copyToClipboard}
+                setActivePrompt={setActivePrompt}
+              />
             ))}
           </div>
         )}
       </main>
- 
-      {/* F. Fixed Gimmick Counter (Bottom Right - hidden on mobile for ideal responsiveness) */}
-      <footer className="hidden sm:block fixed bottom-8 right-8 z-40 select-none pointer-events-auto">
-        <div className="px-6 py-5 rounded-2xl flex flex-col justify-center items-start bg-white/95 border border-neutral-200/80 backdrop-blur-md shadow-[0_15px_40px_rgba(0,0,0,0.06)] relative overflow-hidden shrink-0 min-w-[200px]">
-          {/* Glowing static green dot in the top right corner */}
-          <div className="absolute top-4.5 right-4.5 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
 
-          {/* Counter display */}
-          <span className="text-3xl font-black font-sans tracking-tight text-neutral-950 leading-tight mb-1">
-            {promptsCount.toLocaleString()}
-          </span>
 
-          {/* Label in uppercase tracking-widest */}
-          <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 leading-none">
-            New prompts added
-          </span>
-        </div>
-      </footer>
 
       {/* G. Dynamic Sub-Window Detail Overlay View (Breadcrumbed and Reload-Free) */}
       <AnimatePresence>
@@ -372,7 +350,7 @@ export default function PromptsFeed() {
               className="max-w-5xl w-full rounded-[2.5rem] bg-white border border-neutral-200/85 shadow-2xl overflow-hidden flex flex-col md:flex-row relative pointer-events-auto"
               onClick={(e) => e.stopPropagation()} // Prevent close on background click
             >
-              
+
               {/* Close Button top-right */}
               <button
                 onClick={() => setActivePrompt(null)}
@@ -392,7 +370,7 @@ export default function PromptsFeed() {
 
               {/* Right Column: Breadcrumbs and Prompt Editor Box */}
               <div className="w-full md:w-1/2 p-8 flex flex-col justify-between text-neutral-900">
-                
+
                 {/* Upper Details Block */}
                 <div>
                   {/* Breadcrumb Navigation - clickable return to index feed */}
@@ -403,8 +381,12 @@ export default function PromptsFeed() {
                     >
                       Library
                     </button>
-                    <span>/</span>
-                    <span className="text-neutral-400">{activePrompt.category}</span>
+                    {activePrompt.category && (
+                      <>
+                        <span>/</span>
+                        <span className="text-neutral-400">{activePrompt.category}</span>
+                      </>
+                    )}
                     <span>/</span>
                     <span className="text-neutral-900 truncate max-w-[130px]">{activePrompt.title}</span>
                   </div>
@@ -413,7 +395,7 @@ export default function PromptsFeed() {
                   <h2 className="text-3xl font-black tracking-tight uppercase text-neutral-950 leading-tight mb-2">
                     {activePrompt.title}
                   </h2>
-                  
+
                   <div className="flex items-center gap-2 mb-6 select-none">
                     <div className="w-6 h-6 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[10px] font-black text-neutral-700">
                       {activePrompt.author.avatar}
@@ -446,7 +428,7 @@ export default function PromptsFeed() {
                   </h4>
 
                   <div className="grid grid-cols-2 gap-3 select-none">
-                    
+
                     {/* Copy Plain Text */}
                     <button
                       onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
@@ -468,9 +450,8 @@ export default function PromptsFeed() {
                     {/* Toggle Save state */}
                     <button
                       onClick={() => toggleSave(activePrompt.id)}
-                      className={`btn-scalloped text-xs ${
-                        savedPromptIds.includes(activePrompt.id) ? "btn-scalloped-gold" : "btn-scalloped-white"
-                      }`}
+                      className={`btn-scalloped text-xs ${savedPromptIds.includes(activePrompt.id) ? "btn-scalloped-gold" : "btn-scalloped-white"
+                        }`}
                     >
                       <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
                       {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
