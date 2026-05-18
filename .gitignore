@@ -41,3 +41,7 @@ coverage/
 
 # Next.js Cache
 .next/cache/
+.next/app-build-manifest.json
+.next/app-build-manifest.json
+/.next
+.next/build-manifest.json
