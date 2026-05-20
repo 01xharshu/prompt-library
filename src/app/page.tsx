@@ -46,6 +46,18 @@ export default function Home() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
 
+  // Load saved prompt IDs from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("saved-prompt-ids");
+    if (saved) {
+      try {
+        setSavedPromptIds(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved prompt IDs:", e);
+      }
+    }
+  }, []);
+
   const toggleFlip = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setFlippedCards(prev => ({
@@ -73,7 +85,19 @@ export default function Home() {
   };
 
   const toggleSave = (id: string) => {
-    setSavedPromptIds(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+    setSavedPromptIds(p => {
+      const next = p.includes(id) ? p.filter(x => x !== id) : [...p, id];
+      localStorage.setItem("saved-prompt-ids", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const handleRemoveSaved = (id: string) => {
+    setSavedPromptIds(prev => {
+      const next = prev.filter(x => x !== id);
+      localStorage.setItem("saved-prompt-ids", JSON.stringify(next));
+      return next;
+    });
   };
 
   const downloadAsTxt = (title: string, text: string) => {
@@ -186,7 +210,7 @@ export default function Home() {
                   }`}
                 >
                   {/* FRONT SIDE: Image */}
-                  <div className="[backface-visibility:hidden] rounded-2xl overflow-hidden bg-white border border-neutral-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+                  <div className="[backface-visibility:hidden] rounded-2xl overflow-hidden bg-white border border-neutral-200/60 shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.12),0_6px_16px_rgba(0,0,0,0.04)]">
                     <img
                       src={item.imagePath}
                       alt={extractText(item.title)}
@@ -195,7 +219,7 @@ export default function Home() {
                   </div>
 
                   {/* BACK SIDE: Prompt Details (Reduced padding to p-4 for compact spacing) */}
-                  <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl bg-white border border-neutral-200/80 p-4 flex flex-col justify-between shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden">
+                  <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-2xl bg-white border border-neutral-200/80 p-4 flex flex-col justify-between shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03),inset_0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden">
                     <div className="flex-1 flex flex-col min-h-0 select-text">
                       <span className="text-[9px] font-bold tracking-widest uppercase text-neutral-400 mb-1 block select-none">
                         {extractText(item.category)}
@@ -284,7 +308,7 @@ export default function Home() {
               </button>
 
               <div className="w-full md:w-1/2 p-6 flex items-center justify-center bg-neutral-50 border-b md:border-b-0 md:border-r border-neutral-100">
-                <img src={activePrompt.imagePath} alt={extractText(activePrompt.title)} className="w-full h-auto max-h-[65vh] object-contain rounded-2xl" />
+                <img src={activePrompt.imagePath} alt={extractText(activePrompt.title)} className="w-full h-auto max-h-[65vh] object-contain rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] border border-neutral-200/60" />
               </div>
 
               <div className="w-full md:w-1/2 p-8 flex flex-col justify-between text-neutral-900">

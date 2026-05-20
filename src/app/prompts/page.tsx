@@ -6,6 +6,7 @@ import { Copy, Download, Heart, ArrowLeft, X, Check, Search, Filter } from "luci
 import Link from "next/link";
 
 import promptData from "@/data/prompts.json";
+import SavedSidebar from "../components/SavedSidebar";
 
 interface PromptItem {
   id: string;
@@ -37,7 +38,7 @@ function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: Prompt
   return (
     <div
       onClick={() => setActivePrompt(item)}
-      className="break-inside-avoid mb-6 rounded-[1.8rem] border border-neutral-100 bg-[#f6f6f8] border-[10px] border-white shadow-[0_8px_30px_rgba(0,0,0,0.03)] cursor-pointer group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_12px_35px_rgba(0,0,0,0.06)] relative overflow-hidden"
+      className="break-inside-avoid mb-6 rounded-[1.8rem] border border-neutral-100 bg-[#f6f6f8] border-[10px] border-white shadow-[0_16px_36px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] cursor-pointer group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_24px_48px_rgba(0,0,0,0.14),0_8px_20px_rgba(0,0,0,0.05)] relative overflow-hidden"
     >
       {/* Aspect-ratio preserving wrapper */}
       <div
@@ -116,7 +117,20 @@ export default function PromptsFeed() {
   const [error, setError] = useState<string | null>(null);
 
   // Saved Prompts Tracker State
-  const [savedPromptIds, setSavedPromptIds] = useState<string[]>(["portrait"]);
+  const [savedPromptIds, setSavedPromptIds] = useState<string[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Load saved prompt IDs from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("saved-prompt-ids");
+    if (saved) {
+      try {
+        setSavedPromptIds(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved prompt IDs:", e);
+      }
+    }
+  }, []);
 
   // Active Detail Window State
   const [activePrompt, setActivePrompt] = useState<PromptItem | null>(null);
@@ -254,9 +268,19 @@ export default function PromptsFeed() {
 
   // Toggle Save Prompt
   const toggleSave = (id: string) => {
-    setSavedPromptIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSavedPromptIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      localStorage.setItem("saved-prompt-ids", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const handleRemoveSaved = (id: string) => {
+    setSavedPromptIds(prev => {
+      const next = prev.filter(x => x !== id);
+      localStorage.setItem("saved-prompt-ids", JSON.stringify(next));
+      return next;
+    });
   };
 
   // Download Prompt as a .txt file
@@ -291,6 +315,7 @@ export default function PromptsFeed() {
 
   return (
     <div className="relative min-h-screen bg-white text-neutral-900 font-sans overflow-x-hidden">
+      <div className={`transition-all duration-500 ease-in-out ${isSidebarOpen ? "lg:pr-[420px]" : ""}`}>
 
       {/* Back to Home Button (Top Left) */}
       <div className="absolute sm:fixed top-6 left-6 sm:top-8 sm:left-8 z-40 select-none">
@@ -301,6 +326,22 @@ export default function PromptsFeed() {
           <ArrowLeft className="w-3.5 h-3.5 text-neutral-500" />
           Gateway
         </Link>
+      </div>
+
+      {/* Saved Prompts Toggle Button (Top Right) */}
+      <div className={`absolute sm:fixed top-6 sm:top-8 z-40 select-none transition-all duration-500 ease-in-out ${isSidebarOpen ? "right-[444px]" : "right-6 sm:right-8"}`}>
+        <button
+          onClick={() => (isSidebarOpen ? setIsSidebarOpen(false) : setIsSidebarOpen(true))}
+          className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm relative cursor-pointer"
+        >
+          <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
+          Saved
+          {savedPromptIds.length > 0 && (
+            <span className="ml-1 bg-rose-500 text-white rounded-full w-4.5 h-4.5 flex items-center justify-center text-[9px] font-bold">
+              {savedPromptIds.length}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* D. Page Header Block */}
@@ -368,7 +409,7 @@ export default function PromptsFeed() {
             ].map((skele, idx) => (
               <div
                 key={idx}
-                className={`break-inside-avoid mb-6 rounded-[1.8rem] bg-neutral-50 border-[10px] border-white shadow-[0_12px_40px_-8px_rgba(0,0,0,0.06)] relative overflow-hidden animate-pulse ${skele.height}`}
+                className={`break-inside-avoid mb-6 rounded-[1.8rem] bg-neutral-50 border-[10px] border-white shadow-[0_16px_36px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] relative overflow-hidden animate-pulse ${skele.height}`}
               >
                 <div className="w-full h-full bg-neutral-200/50" />
                 <div className="absolute bottom-5 left-5 right-5 space-y-2">
@@ -445,7 +486,7 @@ export default function PromptsFeed() {
                 <img
                   src={activePrompt.imagePath}
                   alt={activePrompt.title}
-                  className="w-full h-auto max-h-[70vh] object-contain rounded-[1.5rem] shadow-lg border border-neutral-200/60"
+                  className="w-full h-auto max-h-[70vh] object-contain rounded-[1.5rem] shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] border border-neutral-200/60"
                 />
               </div>
 
@@ -552,6 +593,21 @@ export default function PromptsFeed() {
         )}
       </AnimatePresence>
 
+      </div>
+
+      <SavedSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        savedIds={savedPromptIds}
+        prompts={prompts}
+        onRemove={handleRemoveSaved}
+        onSelect={(item) => {
+          setIsSidebarOpen(false);
+          setActivePrompt(item);
+        }}
+        copyToClipboard={copyToClipboard}
+        copiedId={copiedId}
+      />
     </div>
   );
 }
