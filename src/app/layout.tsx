@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description: "Accelerate your AI workflows with our beautifully designed collection of copy-pasteable production-ready prompts.",
   keywords: ["prompt engineering", "ai prompts", "chatgpt prompts", "midjourney", "claude", "developer tools"],
   authors: [{ name: "PromptLib Team" }],
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export const viewport: Viewport = {
