@@ -304,3 +304,251 @@
   background-color: rgba(255, 255, 255, 0.05) !important;
   border-color: rgba(255, 255, 255, 0.45) !important;
 }
+
+/* ═══ Custom Premium UI Button & Control Styles ═══ */
+
+/* 1. Squircle White Icon Button (Image 1 Style) */
+.btn-squircle-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #71717a;
+  border-radius: 1.5rem; /* 24px */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-squircle-white:hover {
+  color: #18181b;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.btn-squircle-white:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* 2. Composite Pill Booking Widget (Image 2 Style) */
+.pill-booking-container {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.375rem 0.375rem 0.375rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.01);
+  gap: 1.25rem;
+  height: 52px;
+}
+
+.pill-booking-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #09090b;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.pill-booking-selector-btn:hover {
+  opacity: 0.85;
+}
+
+.pill-booking-selector-btn span {
+  color: #a1a1aa;
+  font-weight: 500;
+}
+
+.btn-booking-gradient {
+  background: linear-gradient(135deg, #ff8a5c 0%, #ff527c 40%, #7e5bef 85%, #6366f1 100%);
+  background-size: 140% 140%;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(126, 91, 239, 0.25);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-booking-gradient:hover {
+  background-position: right center;
+  box-shadow: 0 6px 20px rgba(126, 91, 239, 0.4);
+  transform: scale(1.02);
+}
+
+.btn-booking-gradient:active {
+  transform: scale(0.97);
+}
+
+/* 3. Border-Outlined Ask AI Gradient Button (Image 3 Style) */
+.btn-ask-ai-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #ff8a5c 0%, #ff527c 35%, #7e5bef 80%, #6366f1 100%);
+  background-size: 140% 140%;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  border-radius: 9999px;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 24px rgba(126, 91, 239, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 48px;
+}
+
+.btn-ask-ai-gradient:hover {
+  background-position: right center;
+  box-shadow: 0 10px 30px rgba(126, 91, 239, 0.35);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.btn-ask-ai-gradient:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 4. Badge-Style Filter Indicator Pill (Image 4 Style) */
+.pill-filter-container {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.01);
+  gap: 0.75rem;
+  height: 48px;
+  transition: all 0.25s ease;
+}
+
+.pill-filter-container:hover {
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.pill-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #52525b;
+}
+
+.pill-filter-dot {
+  color: #e4e4e7;
+  font-weight: 800;
+}
+
+.pill-filter-badge {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.pill-filter-divider {
+  width: 1px;
+  height: 16px;
+  background-color: #e4e4e7;
+}
+
+.pill-filter-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  background: transparent;
+  border: none;
+  padding: 2px;
+}
+
+.pill-filter-close:hover {
+  color: #52525b;
+  transform: scale(1.1);
+}
+
+.pill-filter-close:active {
+  transform: scale(0.9);
+}
+
+/* 5. Translucent Search Pill with White Circle Action (Image 5 Style) */
+.pill-search-container {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f1f1f3;
+  border-radius: 9999px;
+  padding: 0.375rem 0.375rem 0.375rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  gap: 1rem;
+  width: 100%;
+  max-width: 340px;
+  height: 48px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pill-search-container:focus-within {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.pill-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #18181b;
+  width: 100%;
+}
+
+.pill-search-input::placeholder {
+  color: #a1a1aa;
+  font-weight: 450;
+}
+
+.pill-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  color: #71717a;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.pill-search-btn:hover {
+  color: #09090b;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.pill-search-btn:active {
+  transform: scale(0.95);
+}

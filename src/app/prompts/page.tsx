@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Download, Heart, ArrowLeft, X, Check } from "lucide-react";
+import { Copy, Download, Heart, ArrowLeft, X, Check, Search, Filter } from "lucide-react";
 import Link from "next/link";
 
 import promptData from "@/data/prompts.json";
@@ -109,6 +109,23 @@ function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: Prompt
   );
 }
 
+// Custom Sidebar Layout Toggle Icon (Image 1 Style)
+const LayoutToggleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="2.5" />
+    <line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" strokeWidth="2.5" />
+    <path d="M14 15L11.5 12L14 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// Custom Ask AI Sparkles Icon (Image 3 Style)
+const AskAiSparkles = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 22C12 22 12.5 17 15 14.5C17.5 12 22 12 22 12C22 12 17.5 12 15 9.5C12.5 7 12 2 12 2C12 2 11.5 7 9 9.5C6.5 12 2 12 2 12C2 12 6.5 12 9 14.5C11.5 17 12 22 12 22Z" fill="currentColor" />
+    <path d="M6 7C6 7 6.2 5 7.2 4C8.2 3 10 3 10 3C10 3 8.2 3 7.2 2C6.2 1 6 0 6 0C6 0 5.8 1 4.8 2C3.8 3 2 3 2 3C2 3 3.8 3 4.8 4C5.8 5 6 7 6 7Z" fill="currentColor" />
+  </svg>
+);
+
 export default function PromptsFeed() {
   // Mapped Live Prompts State
   const [prompts, setPrompts] = useState<PromptItem[]>([]);
@@ -123,6 +140,57 @@ export default function PromptsFeed() {
 
   // Copied Alert State (tracks which item id has just been copied)
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Search and Layout states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [columnLayout, setColumnLayout] = useState<"wide" | "normal" | "compact">("normal");
+
+  // Clear filters helper
+  const clearAllFilters = () => {
+    setSearchQuery("");
+  };
+
+  // Toggle grid layout density
+  const toggleLayout = () => {
+    if (columnLayout === "normal") setColumnLayout("compact");
+    else if (columnLayout === "compact") setColumnLayout("wide");
+    else setColumnLayout("normal");
+  };
+
+  // Select dynamic columns class
+  const getColumnClass = () => {
+    switch (columnLayout) {
+      case "wide":
+        return "columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]";
+      case "compact":
+        return "columns-1 sm:columns-2 lg:columns-4 xl:columns-5 gap-4 [column-fill:_balance]";
+      case "normal":
+      default:
+        return "columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]";
+    }
+  };
+
+  // "Ask AI" random selection handler
+  const handleAskAI = () => {
+    if (prompts.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * prompts.length);
+    const randomPrompt = prompts[randomIndex];
+    setActivePrompt(randomPrompt);
+  };
+
+  // Filtered prompts list
+  const filteredPrompts = prompts.filter(item => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      item.title.toLowerCase().includes(query) ||
+      item.promptText.toLowerCase().includes(query) ||
+      item.description.toLowerCase().includes(query) ||
+      item.category.toLowerCase().includes(query)
+    );
+  });
+
+  const activeFiltersCount = searchQuery.trim() ? 1 : 0;
 
   // Fetch prompts from GitHub JSON API with local fallback
   useEffect(() => {
@@ -286,12 +354,74 @@ export default function PromptsFeed() {
         </p>
       </header>
 
+      {/* Search and Filters Control Panel */}
+      <section className="w-full max-w-6xl mx-auto px-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-4 select-none relative z-20">
+        {/* Left Side: Search Input and Filter Badge */}
+        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+          {/* Search Pill (Image 5 Style) */}
+          <div className="pill-search-container">
+            <input
+              type="text"
+              placeholder="Search prompts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pill-search-input"
+            />
+            <button className="pill-search-btn" title="Search">
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Filter Pill (Image 4 Style) - Only visible if filters active */}
+          {activeFiltersCount > 0 && (
+            <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
+              <div className="pill-filter-label">
+                <Filter className="w-4 h-4 text-neutral-500" />
+                Filter
+                <span className="pill-filter-dot">•</span>
+                <span className="pill-filter-badge">{activeFiltersCount}</span>
+              </div>
+              <div className="pill-filter-divider" />
+              <button 
+                onClick={clearAllFilters}
+                className="pill-filter-close"
+                title="Clear Filters"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right Side: Layout Switcher and Ask AI Gradient CTA */}
+        <div className="flex items-center gap-4 w-full md:w-auto justify-end">
+          {/* Ask AI Button (Image 3 Style) */}
+          <button
+            onClick={handleAskAI}
+            className="btn-ask-ai-gradient"
+            title="Get a random premium prompt recommendation"
+          >
+            <AskAiSparkles />
+            <span>Ask AI</span>
+          </button>
+
+          {/* Squircle White Layout Toggle (Image 1 Style) */}
+          <button
+            onClick={toggleLayout}
+            className="btn-squircle-white w-12 h-12 flex-shrink-0"
+            title={`Toggle layout columns (Current: ${columnLayout})`}
+          >
+            <LayoutToggleIcon />
+          </button>
+        </div>
+      </section>
+
       {/* E. Pinterest Masonry Feed Grid */}
       <main className="w-full max-w-7xl mx-auto px-6 pb-40 relative z-20">
 
         {loading ? (
           /* Premium Masonry Loading Skeletons */
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
+          <div className={getColumnClass()}>
             {[
               { height: "h-72" },
               { height: "h-96" },
@@ -314,9 +444,26 @@ export default function PromptsFeed() {
               </div>
             ))}
           </div>
+        ) : filteredPrompts.length === 0 ? (
+          /* Empty Search Results State */
+          <div className="flex flex-col items-center justify-center py-20 text-center select-none animate-in fade-in duration-300">
+            <div className="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mb-6 text-neutral-400">
+              <Search className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-neutral-800 mb-2">No Prompts Found</h3>
+            <p className="text-neutral-500 text-sm max-w-md mb-8">
+              We couldn't find any prompts matching "{searchQuery}". Try adjusting your keywords or clearing the search.
+            </p>
+            <button
+              onClick={clearAllFilters}
+              className="btn-scalloped bg-neutral-900 text-white px-8 py-3 text-sm font-semibold hover:bg-neutral-800 transition-all duration-200"
+            >
+              Reset Search
+            </button>
+          </div>
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
-            {prompts.map((item) => (
+          <div className={getColumnClass()}>
+            {filteredPrompts.map((item) => (
               <PromptCard
                 key={item.id}
                 item={item}
