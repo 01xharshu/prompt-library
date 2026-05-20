@@ -109,23 +109,6 @@ function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: Prompt
   );
 }
 
-// Custom Sidebar Layout Toggle Icon (Image 1 Style)
-const LayoutToggleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="2.5" />
-    <line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" strokeWidth="2.5" />
-    <path d="M14 15L11.5 12L14 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-// Custom Ask AI Sparkles Icon (Image 3 Style)
-const AskAiSparkles = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 22C12 22 12.5 17 15 14.5C17.5 12 22 12 22 12C22 12 17.5 12 15 9.5C12.5 7 12 2 12 2C12 2 11.5 7 9 9.5C6.5 12 2 12 2 12C2 12 6.5 12 9 14.5C11.5 17 12 22 12 22Z" fill="currentColor" />
-    <path d="M6 7C6 7 6.2 5 7.2 4C8.2 3 10 3 10 3C10 3 8.2 3 7.2 2C6.2 1 6 0 6 0C6 0 5.8 1 4.8 2C3.8 3 2 3 2 3C2 3 3.8 3 4.8 4C5.8 5 6 7 6 7Z" fill="currentColor" />
-  </svg>
-);
-
 export default function PromptsFeed() {
   // Mapped Live Prompts State
   const [prompts, setPrompts] = useState<PromptItem[]>([]);
@@ -143,39 +126,15 @@ export default function PromptsFeed() {
 
   // Search and Layout states
   const [searchQuery, setSearchQuery] = useState("");
-  const [columnLayout, setColumnLayout] = useState<"wide" | "normal" | "compact">("normal");
 
   // Clear filters helper
   const clearAllFilters = () => {
     setSearchQuery("");
   };
 
-  // Toggle grid layout density
-  const toggleLayout = () => {
-    if (columnLayout === "normal") setColumnLayout("compact");
-    else if (columnLayout === "compact") setColumnLayout("wide");
-    else setColumnLayout("normal");
-  };
-
   // Select dynamic columns class
   const getColumnClass = () => {
-    switch (columnLayout) {
-      case "wide":
-        return "columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]";
-      case "compact":
-        return "columns-1 sm:columns-2 lg:columns-4 xl:columns-5 gap-4 [column-fill:_balance]";
-      case "normal":
-      default:
-        return "columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]";
-    }
-  };
-
-  // "Ask AI" random selection handler
-  const handleAskAI = () => {
-    if (prompts.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * prompts.length);
-    const randomPrompt = prompts[randomIndex];
-    setActivePrompt(randomPrompt);
+    return "columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]";
   };
 
   // Filtered prompts list
@@ -355,65 +314,40 @@ export default function PromptsFeed() {
       </header>
 
       {/* Search and Filters Control Panel */}
-      <section className="w-full max-w-6xl mx-auto px-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-4 select-none relative z-20">
-        {/* Left Side: Search Input and Filter Badge */}
-        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
-          {/* Search Pill (Image 5 Style) */}
-          <div className="pill-search-container">
-            <input
-              type="text"
-              placeholder="Search prompts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pill-search-input"
-            />
-            <button className="pill-search-btn" title="Search">
-              <Search className="w-4 h-4" />
+      <section className="w-full max-w-6xl mx-auto px-6 mb-12 flex items-center justify-start gap-4 select-none relative z-20">
+        {/* Search Pill (Image 5 Style) */}
+        <div className="pill-search-container">
+          <input
+            type="text"
+            placeholder="Search prompts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pill-search-input"
+          />
+          <button className="pill-search-btn" title="Search">
+            <Search className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Filter Pill (Image 4 Style) - Only visible if filters active */}
+        {activeFiltersCount > 0 && (
+          <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
+            <div className="pill-filter-label">
+              <Filter className="w-4 h-4 text-neutral-500" />
+              Filter
+              <span className="pill-filter-dot">•</span>
+              <span className="pill-filter-badge">{activeFiltersCount}</span>
+            </div>
+            <div className="pill-filter-divider" />
+            <button 
+              onClick={clearAllFilters}
+              className="pill-filter-close"
+              title="Clear Filters"
+            >
+              <X className="w-4 h-4" />
             </button>
           </div>
-
-          {/* Filter Pill (Image 4 Style) - Only visible if filters active */}
-          {activeFiltersCount > 0 && (
-            <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
-              <div className="pill-filter-label">
-                <Filter className="w-4 h-4 text-neutral-500" />
-                Filter
-                <span className="pill-filter-dot">•</span>
-                <span className="pill-filter-badge">{activeFiltersCount}</span>
-              </div>
-              <div className="pill-filter-divider" />
-              <button 
-                onClick={clearAllFilters}
-                className="pill-filter-close"
-                title="Clear Filters"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Right Side: Layout Switcher and Ask AI Gradient CTA */}
-        <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-          {/* Ask AI Button (Image 3 Style) */}
-          <button
-            onClick={handleAskAI}
-            className="btn-ask-ai-gradient"
-            title="Get a random premium prompt recommendation"
-          >
-            <AskAiSparkles />
-            <span>Ask AI</span>
-          </button>
-
-          {/* Squircle White Layout Toggle (Image 1 Style) */}
-          <button
-            onClick={toggleLayout}
-            className="btn-squircle-white w-12 h-12 flex-shrink-0"
-            title={`Toggle layout columns (Current: ${columnLayout})`}
-          >
-            <LayoutToggleIcon />
-          </button>
-        </div>
+        )}
       </section>
 
       {/* E. Pinterest Masonry Feed Grid */}
@@ -538,31 +472,14 @@ export default function PromptsFeed() {
                     <span className="text-neutral-900 truncate max-w-[130px]">{activePrompt.title}</span>
                   </div>
 
-                  {/* Title & Creator badge */}
-                  <h2 className="text-3xl font-black tracking-tight uppercase text-neutral-950 leading-tight mb-2">
+                  {/* Title */}
+                  <h2 className="text-3xl font-black tracking-tight uppercase text-neutral-950 leading-tight mb-6">
                     {activePrompt.title}
                   </h2>
 
-                  <div className="flex items-center gap-2 mb-6 select-none">
-                    <div className="w-6 h-6 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[10px] font-black text-neutral-700">
-                      {activePrompt.author.avatar}
-                    </div>
-                    <span className="text-xs text-neutral-500 font-light">
-                      Created by <span className="text-neutral-900 font-medium">{activePrompt.author.name}</span>
-                    </span>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-neutral-600 font-light leading-relaxed mb-6 select-text">
-                    {activePrompt.description}
-                  </p>
-
                   {/* Code Editor Box containing prompt */}
-                  <div className="relative mb-6">
-                    <span className="absolute top-3 right-4 text-[9px] font-bold tracking-widest uppercase text-neutral-400 select-none">
-                      Prompt Text
-                    </span>
-                    <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-mono text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed">
+                  <div className="mb-6">
+                    <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-mono text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed no-scrollbar">
                       {activePrompt.promptText}
                     </div>
                   </div>
@@ -597,8 +514,11 @@ export default function PromptsFeed() {
                     {/* Toggle Save state */}
                     <button
                       onClick={() => toggleSave(activePrompt.id)}
-                      className={`btn-scalloped text-xs ${savedPromptIds.includes(activePrompt.id) ? "btn-scalloped-gold" : "btn-scalloped-white"
-                        }`}
+                      className={`flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold transition-colors select-none ${
+                        savedPromptIds.includes(activePrompt.id)
+                          ? "text-[#c5a044] hover:text-[#b08d36]"
+                          : "text-neutral-900 hover:text-neutral-600"
+                      }`}
                     >
                       <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
                       {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
@@ -607,7 +527,7 @@ export default function PromptsFeed() {
                     {/* Download TXT file */}
                     <button
                       onClick={() => downloadAsTxt(activePrompt.title, activePrompt.promptText)}
-                      className="btn-scalloped btn-scalloped-white text-xs"
+                      className="flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold text-neutral-900 hover:text-neutral-600 transition-colors"
                     >
                       <Download className="w-3.5 h-3.5" />
                       Download TXT
@@ -616,7 +536,7 @@ export default function PromptsFeed() {
                     {/* Download DOC file */}
                     <button
                       onClick={() => downloadAsDoc(activePrompt.title, activePrompt.promptText)}
-                      className="btn-scalloped btn-scalloped-white text-xs"
+                      className="flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold text-neutral-900 hover:text-neutral-600 transition-colors"
                     >
                       <Download className="w-3.5 h-3.5" />
                       Download DOC

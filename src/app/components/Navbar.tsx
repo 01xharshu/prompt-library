@@ -1,19 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, Menu, X, ChevronsUpDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [duration, setDuration] = useState("30 mins");
-
-  const durations = ["15 mins", "30 mins", "45 mins", "60 mins"];
-  const handleDurationToggle = () => {
-    const currentIndex = durations.indexOf(duration);
-    const nextIndex = (currentIndex + 1) % durations.length;
-    setDuration(durations[nextIndex]);
-  };
 
   return (
     <>
@@ -40,30 +32,13 @@ export default function Navbar() {
 
         {/* Right section - CTA Button (Desktop) & Hamburger Icon (Mobile) */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          <div className="hidden lg:flex pill-booking-container select-none">
-            <button 
-              onClick={handleDurationToggle}
-              className="pill-booking-selector-btn"
-              title="Click to toggle duration"
-            >
-              <span>{duration.split(" ")[0]}</span>
-              <span className="text-neutral-400 font-normal">{duration.split(" ")[1]}</span>
-              <ChevronsUpDown className="w-3.5 h-3.5 text-neutral-400 ml-0.5" />
-            </button>
-            <button 
-              onClick={() => alert(`Booking a ${duration} call!`)}
-              className="btn-booking-gradient"
-            >
-              Book a Call
-            </button>
-          </div>
-
           <button 
-            onClick={() => alert(`Booking a standard call!`)}
-            className="hidden sm:block lg:hidden btn-scalloped bg-white/10 text-white backdrop-blur-md border border-white/10 px-8 py-3 text-sm font-medium hover:bg-white/20 transition-all duration-300"
+            onClick={() => alert("Booking a demo!")}
+            className="hidden sm:block btn-scalloped bg-white/10 text-white backdrop-blur-md border border-white/10 px-8 py-3 text-sm font-medium hover:bg-white/20 transition-all duration-300"
           >
-            Book a call
+            Book a demo
           </button>
+          
           
           {/* Hamburger Toggle Button (Mobile only) */}
           <button 
