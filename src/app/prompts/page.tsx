@@ -34,6 +34,16 @@ interface PromptCardProps {
 
 function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: PromptCardProps) {
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const [imgSrc, setImgSrc] = useState(item.imagePath);
+  const [imgError, setImgError] = useState(false);
+  const hasTriedFallback = React.useRef(false);
+
+  // Reset image source when item changes
+  React.useEffect(() => {
+    setImgSrc(item.imagePath);
+    setImgError(false);
+    hasTriedFallback.current = false;
+  }, [item.imagePath]);
 
   return (
     <div
@@ -48,24 +58,43 @@ function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: Prompt
           transition: "aspect-ratio 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
         }}
       >
-        <img
-          src={item.imagePath}
-          alt={item.title}
-          className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] opacity-100 scale-100"
-          onLoad={(e) => {
-            const img = e.currentTarget;
-            if (img.naturalWidth && img.naturalHeight && img.naturalHeight > 0) {
-              const ratio = img.naturalWidth / img.naturalHeight;
-              if (!isNaN(ratio) && isFinite(ratio) && ratio > 0) {
-                setAspectRatio(ratio);
+        {imgSrc && !imgError ? (
+          <img
+            src={imgSrc}
+            alt={item.title}
+            className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03]"
+            loading="lazy"
+
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.naturalWidth && img.naturalHeight && img.naturalHeight > 0) {
+                const ratio = img.naturalWidth / img.naturalHeight;
+                if (!isNaN(ratio) && isFinite(ratio) && ratio > 0) {
+                  setAspectRatio(ratio);
+                }
               }
-            }
-          }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
-            setAspectRatio(1.5);
-          }}
-        />
+            }}
+            onError={() => {
+              if (!hasTriedFallback.current) {
+                hasTriedFallback.current = true;
+                setImgSrc("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600");
+                setAspectRatio(1.5);
+              } else {
+                // Both original and fallback failed — show placeholder
+                setImgError(true);
+              }
+            }}
+          />
+        ) : (
+          /* Placeholder when image completely fails */
+          <div className="w-full h-full flex items-center justify-center bg-neutral-100 text-neutral-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+            </svg>
+          </div>
+        )}
       </div>
 
       {/* Hover UI overlay ON the card */}
@@ -163,6 +192,8 @@ export default function PromptsFeed() {
 
   // Fetch prompts from GitHub JSON API with local fallback
   useEffect(() => {
+    const IMAGE_BASE_URL = "https://01xharshu.github.io/image-prompt-api/";
+
     const fetchPrompts = async () => {
       try {
         setLoading(true);
@@ -176,10 +207,23 @@ export default function PromptsFeed() {
         const data = await response.json();
 
         // Map simplified API shape (id, image, prompt) to rich PromptItem layout
-        const mappedData = data.map((item: any) => {
+        const mappedData = data.map((item: any, index: number) => {
           const promptText = item.prompt || "";
-          const id = String(item.id || Math.random());
-          const imagePath = item.image ? `${item.image}?v=${id}` : "";
+          const id = String(item.id || index + 1);
+
+          // Normalize image URL: handle both absolute URLs and relative paths from the API
+          let imagePath = "";
+          if (item.image) {
+            const rawImage = item.image.trim();
+            if (rawImage.startsWith("http://") || rawImage.startsWith("https://")) {
+              // Already an absolute URL — use as-is
+              imagePath = rawImage;
+            } else {
+              // Relative path (e.g. "images/image13.jpg") — resolve against the GitHub Pages base
+              const relativePath = rawImage.startsWith("/") ? rawImage.slice(1) : rawImage;
+              imagePath = `${IMAGE_BASE_URL}${relativePath}`;
+            }
+          }
 
           let title = "AI Prompt Asset";
           let category = item.category || "";
@@ -479,7 +523,15 @@ export default function PromptsFeed() {
                 <img
                   src={activePrompt.imagePath}
                   alt={activePrompt.title}
+
                   className="w-full h-auto max-h-[70vh] object-contain rounded-[1.5rem] shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] border border-neutral-200/60"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (!img.dataset.fallback) {
+                      img.dataset.fallback = "true";
+                      img.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
+                    }
+                  }}
                 />
               </div>
 
