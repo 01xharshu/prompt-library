@@ -296,7 +296,7 @@ export default function PromptsFeed() {
       <div className="absolute sm:fixed top-6 left-6 sm:top-8 sm:left-8 z-40 select-none">
         <Link
           href="/"
-          className="btn-scalloped btn-scalloped-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm"
+          className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-neutral-500" />
           Gateway
@@ -390,7 +390,7 @@ export default function PromptsFeed() {
             </p>
             <button
               onClick={clearAllFilters}
-              className="btn-scalloped bg-neutral-900 text-white px-8 py-3 text-sm font-semibold hover:bg-neutral-800 transition-all duration-200"
+              className="btn-pill btn-pill-black px-8 py-3 text-sm font-semibold transition-all duration-200"
             >
               Reset Search
             </button>
@@ -496,7 +496,7 @@ export default function PromptsFeed() {
                     {/* Copy Plain Text */}
                     <button
                       onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
-                      className="btn-scalloped btn-scalloped-black text-xs"
+                      className="btn-pill btn-pill-black text-xs"
                     >
                       {copiedId === activePrompt.id ? (
                         <>

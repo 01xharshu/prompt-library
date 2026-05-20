@@ -134,10 +134,10 @@ export default function Home() {
 
             {/* CTA buttons */}
             <div className="flex items-center gap-4 flex-wrap">
-              <a href="#prompts" className="btn-scalloped btn-scalloped-white px-10 py-4 text-[1.05rem]">
+              <a href="#prompts" className="btn-pill btn-pill-white px-10 py-4 text-[1.05rem]">
                 Browse Prompts
               </a>
-              <a href="/prompts" className="btn-scalloped btn-scalloped-glass px-10 py-4 text-[1.05rem]">
+              <a href="/prompts" className="btn-pill btn-pill-glass px-10 py-4 text-[1.05rem]">
                 Full Library
               </a>
             </div>
@@ -319,17 +319,17 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 select-none">
-                  <button onClick={() => copyToClipboard(extractText(activePrompt.promptText), activePrompt.id)} className="btn-scalloped btn-scalloped-black text-xs">
+                  <button onClick={() => copyToClipboard(extractText(activePrompt.promptText), activePrompt.id)} className="btn-pill btn-pill-black text-xs">
                     {copiedId === activePrompt.id ? <><Check className="w-3.5 h-3.5 text-emerald-400" />Copied!</> : <><Copy className="w-3.5 h-3.5" />Copy Plain</>}
                   </button>
-                  <button onClick={() => toggleSave(activePrompt.id)} className={`btn-scalloped text-xs ${savedPromptIds.includes(activePrompt.id) ? "btn-scalloped-gold" : "btn-scalloped-white"}`}>
+                  <button onClick={() => toggleSave(activePrompt.id)} className={`btn-pill text-xs ${savedPromptIds.includes(activePrompt.id) ? "btn-pill-gold" : "btn-pill-white"}`}>
                     <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
                     {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
                   </button>
-                  <button onClick={() => downloadAsTxt(extractText(activePrompt.title), extractText(activePrompt.promptText))} className="btn-scalloped btn-scalloped-white text-xs">
+                  <button onClick={() => downloadAsTxt(extractText(activePrompt.title), extractText(activePrompt.promptText))} className="btn-pill btn-pill-white text-xs">
                     <Download className="w-3.5 h-3.5" />Download TXT
                   </button>
-                  <button onClick={() => downloadAsDoc(extractText(activePrompt.title), extractText(activePrompt.promptText))} className="btn-scalloped btn-scalloped-white text-xs">
+                  <button onClick={() => downloadAsDoc(extractText(activePrompt.title), extractText(activePrompt.promptText))} className="btn-pill btn-pill-white text-xs">
                     <Download className="w-3.5 h-3.5" />Download DOC
                   </button>
                 </div>

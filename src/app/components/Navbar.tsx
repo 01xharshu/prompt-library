@@ -30,16 +30,8 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Right section - CTA Button (Desktop) & Hamburger Icon (Mobile) */}
+        {/* Right section - Hamburger Icon (Mobile) */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          <button 
-            onClick={() => alert("Booking a demo!")}
-            className="hidden sm:block btn-scalloped bg-white/10 text-white backdrop-blur-md border border-white/10 px-8 py-3 text-sm font-medium hover:bg-white/20 transition-all duration-300"
-          >
-            Book a demo
-          </button>
-          
-          
           {/* Hamburger Toggle Button (Mobile only) */}
           <button 
             onClick={() => setIsOpen(!isOpen)}
@@ -79,12 +71,6 @@ export default function Navbar() {
               >
                 Pricing
               </a>
-              <button 
-                onClick={() => setIsOpen(false)}
-                className="btn-scalloped bg-white text-black px-10 py-4 text-base font-semibold mt-4 shadow-lg active:scale-95"
-              >
-                Book a demo
-              </button>
             </div>
           </motion.div>
         )}

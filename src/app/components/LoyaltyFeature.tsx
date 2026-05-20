@@ -142,8 +142,8 @@ export default function LoyaltyFeature() {
               })}
             </div>
  
-            {/* Scalloped ticket button with custom responsive background cutout */}
-            <button className="btn-scalloped btn-scalloped-white px-7 py-3 mt-6 text-xs font-semibold tracking-wide border border-gray-200">
+            {/* Pill button with custom responsive style */}
+            <button className="btn-pill btn-pill-white px-7 py-3 mt-6 text-xs font-semibold tracking-wide border border-gray-200">
               Read More
             </button>
           </div>
