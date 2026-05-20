@@ -329,18 +329,13 @@ export default function PromptsFeed() {
       </div>
 
       {/* Saved Prompts Toggle Button (Top Right) */}
-      <div className={`absolute sm:fixed top-6 sm:top-8 z-40 select-none transition-all duration-500 ease-in-out ${isSidebarOpen ? "right-[444px]" : "right-6 sm:right-8"}`}>
+      <div className={`absolute sm:fixed top-6 right-6 sm:top-8 sm:right-8 z-40 select-none transition-all duration-300 ${isSidebarOpen ? "opacity-0 scale-95 pointer-events-none" : "opacity-100"}`}>
         <button
-          onClick={() => (isSidebarOpen ? setIsSidebarOpen(false) : setIsSidebarOpen(true))}
+          onClick={() => setIsSidebarOpen(true)}
           className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm relative cursor-pointer"
         >
           <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
           Saved
-          {savedPromptIds.length > 0 && (
-            <span className="ml-1 bg-rose-500 text-white rounded-full w-4.5 h-4.5 flex items-center justify-center text-[9px] font-bold">
-              {savedPromptIds.length}
-            </span>
-          )}
         </button>
       </div>
 

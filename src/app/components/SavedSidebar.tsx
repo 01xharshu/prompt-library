@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Copy, Check, Trash2, Heart, ExternalLink } from "lucide-react";
+import { X, Copy, Check, Trash2, Heart, ExternalLink, ChevronRight } from "lucide-react";
 
 interface PromptItem {
   id: string;
@@ -65,6 +65,14 @@ export default function SavedSidebar({
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed right-0 top-0 bottom-0 w-full max-w-[420px] bg-white shadow-2xl z-50 flex flex-col border-l border-neutral-100"
           >
+            {/* Collapse Tab Button attached to left edge */}
+            <button
+              onClick={onClose}
+              className="absolute left-0 top-24 -translate-x-full bg-white border-y border-l border-neutral-200/80 shadow-[-6px_4px_16px_rgba(0,0,0,0.06)] hover:bg-neutral-50 text-neutral-500 hover:text-neutral-800 transition-all rounded-l-xl py-3.5 px-2 flex items-center justify-center cursor-pointer group"
+              title="Collapse Sidebar"
+            >
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </button>
             {/* Sidebar Header */}
             <div className="p-6 border-b border-neutral-100 flex items-center justify-between select-none">
               <div className="flex items-center gap-2.5">
