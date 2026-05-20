@@ -30,12 +30,22 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-border;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important;
   }
 
   body {
-    @apply bg-neutral-950 text-foreground antialiased selection:bg-violet-500/30 selection:text-violet-200 overflow-x-hidden;
+    @apply bg-neutral-950 text-foreground antialiased selection:bg-[#e8e2d7] selection:text-neutral-900 overflow-x-hidden;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
@@ -77,28 +87,7 @@
   transform: translateY(0) scale(0.98);
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
 
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-/* Hide scrollbar utility */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
 
 .glass-panel {
   background: rgba(255, 255, 255, 0.03);
@@ -540,4 +529,14 @@
 
 .pill-search-btn:active {
   transform: scale(0.95);
+}
+
+/* Custom premium beige text selection highlight */
+::selection {
+  background-color: #e8e2d7 !important;
+  color: #171717 !important;
+}
+::-moz-selection {
+  background-color: #e8e2d7 !important;
+  color: #171717 !important;
 }

@@ -10,18 +10,29 @@ interface Feature {
   icon: React.ReactNode;
 }
 
+const DEMO_PROMPT = `Act as an expert curator for PromptLib. Take the following raw instruction and refine it into a production-ready, beautiful prompt template with structured variables:
+
+"Make a React button component that looks like a sleek, modern glassmorphic pill with custom micro-animations on hover."`;
+
 export default function LoyaltyFeature() {
   const [activeId, setActiveId] = useState<number>(1);
-  const [message, setMessage] = useState<string>("");
+  const [message] = useState<string>(DEMO_PROMPT);
+  const [copied, setCopied] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea height as user types
+  // Auto-resize textarea height on mount
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [message]);
+
+  const copyDemoPrompt = () => {
+    navigator.clipboard.writeText(message);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const features: Feature[] = [
     {
@@ -78,7 +89,7 @@ export default function LoyaltyFeature() {
   ];
 
   return (
-    <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-gray-200 flex justify-center px-4 sm:px-6 lg:px-0">
+    <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-[#e8e2d7] selection:text-neutral-900 flex justify-center px-4 sm:px-6 lg:px-0">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
         
         {/* Left Column: Content */}
@@ -86,8 +97,8 @@ export default function LoyaltyFeature() {
           
           <div>
             {/* Header */}
-            <div className="text-sm font-medium text-gray-500 tracking-wide mb-4 select-none">
-              01 <span className="text-gray-300 mx-1">/</span> Capabilities
+            <div className="text-[10px] font-bold text-neutral-400 tracking-[0.2em] uppercase mb-4 select-none">
+              Capabilities
             </div>
             
             <h2 className="font-serif-custom text-4xl md:text-5xl font-medium tracking-tight text-gray-900 mb-8 select-none">
@@ -95,64 +106,44 @@ export default function LoyaltyFeature() {
             </h2>
  
             {/* Features List */}
-            <div className="relative ml-2">
-              {/* Global Line Track (Behind) */}
-              <div className="absolute left-4 top-5 bottom-8 w-[1px] bg-gray-200"></div>
-              
-              {/* Active Solid Line Track - smoothly moves based on active feature */}
-              <div 
-                className="absolute left-4 w-[2px] bg-gray-800 -ml-[0.5px] transition-all duration-500"
-                style={{
-                  top: `${(activeId - 1) * 88 + 20}px`,
-                  height: "44px"
-                }}
-              />
-              
+            <div className="space-y-6">
               {features.map((feat) => {
                 const isActive = activeId === feat.id;
                 return (
                   <div 
                     key={feat.id}
                     onClick={() => setActiveId(feat.id)}
-                    className={`flex gap-6 mb-6 relative z-10 group cursor-pointer transition-all duration-300 ${
-                      isActive ? "opacity-100" : "opacity-45 hover:opacity-85"
+                    className={`group cursor-pointer transition-all duration-300 ${
+                      isActive ? "opacity-100" : "opacity-45 hover:opacity-80"
                     }`}
                   >
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-1 transition-all duration-300 ${
-                      isActive 
-                        ? "bg-[#faf9f6] border-2 border-gray-800 text-gray-800 scale-110" 
-                        : "bg-[#faf9f6] border border-gray-300 text-gray-400 group-hover:scale-105"
-                    }`}>
-                      {feat.icon}
-                    </div>
-                    <div className="pb-4 border-b border-gray-200/60 w-full">
-                      <h3 className={`font-bold text-gray-900 text-[1.05rem] leading-snug transition-colors ${
-                        isActive ? "text-gray-900" : "text-gray-800"
+                    <div className="flex items-center gap-3">
+                      <div className={`w-1.5 h-1.5 rounded-full bg-neutral-900 transition-all ${
+                        isActive ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                      }`} />
+                      <h3 className={`font-bold text-gray-900 text-[1.05rem] leading-snug transition-all ${
+                        isActive ? "translate-x-0" : "-translate-x-3"
                       }`}>
                         {feat.title}
                       </h3>
-                      {isActive && (
-                        <p className="text-gray-500 text-sm mt-2 leading-relaxed max-w-sm transition-all duration-300">
-                          {feat.description}
-                        </p>
-                      )}
                     </div>
+                    {isActive && (
+                      <p className="text-gray-500 text-sm mt-2.5 leading-relaxed max-w-sm ml-4 font-light animate-in fade-in slide-in-from-left-2 duration-300">
+                        {feat.description}
+                      </p>
+                    )}
                   </div>
                 );
               })}
             </div>
  
-            {/* Pill button with custom responsive style */}
-            <button className="btn-pill btn-pill-white px-7 py-3 mt-6 text-xs font-semibold tracking-wide border border-gray-200">
-              Read More
-            </button>
-          </div>
- 
-          {/* Scroll Indicator */}
-          <div className="hidden lg:flex items-center gap-3 mt-8 pb-1 select-none">
-            <span className="text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">Scroll</span>
-            <div className="w-8 h-[2px] bg-gray-900"></div>
-            <div className="w-4 h-[2px] bg-gray-300"></div>
+            {/* Pill button */}
+            <a 
+              href="/prompts" 
+              className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm mt-10 cursor-pointer inline-flex"
+            >
+              Explore Library
+            </a>
           </div>
         </div>
  
@@ -174,7 +165,7 @@ export default function LoyaltyFeature() {
             
             {/* 1. Large Frosted Glass Background Card (Behind, perfectly centered on all sides) */}
             <div className="absolute -inset-4 sm:-inset-5 rounded-[1.6rem] bg-white/5 backdrop-blur-[20px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-0" />
-
+ 
             {/* 2. Main Interactive ChatGPT Input Card (Front, perfectly concentric) */}
             <div className="relative z-10">
               
@@ -188,9 +179,9 @@ export default function LoyaltyFeature() {
                       <textarea 
                           ref={textareaRef}
                           value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          className="w-full bg-transparent resize-none outline-none text-gray-800 text-base px-4 py-4 placeholder-gray-500 rounded-2xl min-h-[56px] leading-relaxed" 
-                          rows={1} 
+                          readOnly
+                          className="w-full bg-transparent resize-none outline-none text-gray-800 text-sm px-4 py-4 placeholder-gray-500 rounded-2xl min-h-[110px] leading-relaxed cursor-default selection:bg-[#e8e2d7] selection:text-neutral-900" 
+                          rows={4} 
                           placeholder="Message ChatGPT..."
                       />
                       
@@ -199,12 +190,12 @@ export default function LoyaltyFeature() {
                           
                           {/* Left Actions */}
                           <div className="flex items-center gap-1 text-gray-500">
-                              <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none cursor-pointer" title="Attach file">
+                              <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none cursor-default" title="Attach file">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                                   </svg>
                               </button>
-                              <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none cursor-pointer" title="Web search">
+                              <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none cursor-default" title="Web search">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="12" cy="12" r="10"/>
                                     <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
@@ -212,21 +203,31 @@ export default function LoyaltyFeature() {
                                   </svg>
                               </button>
                           </div>
-
+ 
                           {/* Right Actions */}
                           <div className="flex items-center gap-2">
-                              <button className="p-2 hover:bg-gray-200 text-gray-500 rounded-lg transition-colors focus:outline-none cursor-pointer" title="Voice input">
+                              <button className="p-2 hover:bg-gray-200 text-gray-500 rounded-lg transition-colors focus:outline-none cursor-default" title="Voice input">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                                     <line x1="12" x2="12" y1="19" y2="22"/>
                                   </svg>
                               </button>
-                              <button className="p-2 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors focus:outline-none flex items-center justify-center h-9 w-9 cursor-pointer" title="Send message">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="m5 12 7-7 7 7"/>
-                                    <path d="M12 19V5"/>
-                                  </svg>
+                              <button 
+                                  onClick={copyDemoPrompt}
+                                  className="p-2 bg-black text-white rounded-xl hover:bg-gray-800 transition-all focus:outline-none flex items-center justify-center h-9 w-9 cursor-pointer active:scale-95 shadow-md" 
+                                  title={copied ? "Copied!" : "Copy Prompt"}
+                              >
+                                  {copied ? (
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                      </svg>
+                                  ) : (
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                      </svg>
+                                  )}
                               </button>
                           </div>
                       </div>
@@ -238,9 +239,9 @@ export default function LoyaltyFeature() {
                   </div>
               </div>
             </div>
-
+ 
           </div>
-
+ 
         </div>
       </div>
     </section>

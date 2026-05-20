@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import promptData from "@/data/prompts.json";
 import SavedSidebar from "../components/SavedSidebar";
+import Footer from "../components/Footer";
 
 interface PromptItem {
   id: string;
@@ -33,7 +34,6 @@ interface PromptCardProps {
 
 function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: PromptCardProps) {
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
-  const [loaded, setLoaded] = useState(false);
 
   return (
     <div
@@ -44,32 +44,28 @@ function PromptCard({ item, copiedId, copyToClipboard, setActivePrompt }: Prompt
       <div
         className="w-full bg-neutral-100/70 rounded-[1.2rem] overflow-hidden relative"
         style={{
-          aspectRatio: aspectRatio ? `${aspectRatio}` : "4/3",
+          aspectRatio: aspectRatio && aspectRatio > 0 ? `${aspectRatio}` : "4/3",
           transition: "aspect-ratio 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
         }}
       >
         <img
           src={item.imagePath}
           alt={item.title}
-          className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
-            }`}
+          className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] opacity-100 scale-100"
           onLoad={(e) => {
             const img = e.currentTarget;
-            if (img.naturalWidth && img.naturalHeight) {
-              setAspectRatio(img.naturalWidth / img.naturalHeight);
-              setLoaded(true);
+            if (img.naturalWidth && img.naturalHeight && img.naturalHeight > 0) {
+              const ratio = img.naturalWidth / img.naturalHeight;
+              if (!isNaN(ratio) && isFinite(ratio) && ratio > 0) {
+                setAspectRatio(ratio);
+              }
             }
           }}
           onError={(e) => {
             (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
             setAspectRatio(1.5);
-            setLoaded(true);
           }}
         />
-
-        {!loaded && (
-          <div className="absolute inset-0 bg-neutral-100/80 animate-pulse rounded-[1.2rem]" />
-        )}
       </div>
 
       {/* Hover UI overlay ON the card */}
@@ -171,7 +167,9 @@ export default function PromptsFeed() {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("https://cdn.jsdelivr.net/gh/01xharshu/image-prompt-api@main/data/prompts.json");
+        const response = await fetch(
+          `https://raw.githubusercontent.com/01xharshu/image-prompt-api/main/data/prompts.json?t=${Date.now()}`
+        );
         if (!response.ok) {
           throw new Error(`Failed to fetch live prompts (Status ${response.status})`);
         }
@@ -181,7 +179,7 @@ export default function PromptsFeed() {
         const mappedData = data.map((item: any) => {
           const promptText = item.prompt || "";
           const id = String(item.id || Math.random());
-          const imagePath = item.image || "";
+          const imagePath = item.image ? `${item.image}?v=${id}` : "";
 
           let title = "AI Prompt Asset";
           let category = item.category || "";
@@ -587,6 +585,9 @@ export default function PromptsFeed() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ═══ FOOTER ═══ */}
+      <Footer />
 
       </div>
 

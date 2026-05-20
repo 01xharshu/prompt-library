@@ -45,3 +45,4 @@ coverage/
 .next/app-build-manifest.json
 /.next
 .next/build-manifest.json
+.DS_Store
