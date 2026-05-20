@@ -90,10 +90,10 @@ export default function LoyaltyFeature() {
 
   return (
     <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-[#e8e2d7] selection:text-neutral-900 flex justify-center px-4 sm:px-6 lg:px-0">
-      <div className="w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
+      <div className="w-full max-w-7xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
         
         {/* Left Column: Content */}
-        <div className="w-full lg:w-[45%] flex flex-col relative px-6 py-12 md:px-10 lg:py-16 justify-between min-h-[60vh] lg:min-h-[650px]">
+        <div className="w-full lg:w-1/2 flex flex-col relative px-6 py-12 md:px-12 lg:px-16 lg:py-20 justify-between min-h-[60vh] lg:min-h-[650px]">
           
           <div>
             {/* Header */}
@@ -101,8 +101,8 @@ export default function LoyaltyFeature() {
               Capabilities
             </div>
             
-            <h2 className="font-serif-custom text-4xl md:text-5xl font-medium tracking-tight text-gray-900 mb-8 select-none">
-              Engineered Library
+            <h2 className="font-serif-custom text-4xl sm:text-5xl text-neutral-950 tracking-tight leading-tight font-bold mb-8 select-none">
+              Engineered <em className="italic font-bold text-neutral-400">Library</em>
             </h2>
  
             {/* Features List */}
@@ -128,7 +128,7 @@ export default function LoyaltyFeature() {
                       </h3>
                     </div>
                     {isActive && (
-                      <p className="text-gray-500 text-sm mt-2.5 leading-relaxed max-w-sm ml-4 font-light animate-in fade-in slide-in-from-left-2 duration-300">
+                      <p className="text-gray-500 text-sm mt-2.5 leading-relaxed max-w-lg ml-4 font-light animate-in fade-in slide-in-from-left-2 duration-300">
                         {feat.description}
                       </p>
                     )}
@@ -148,7 +148,7 @@ export default function LoyaltyFeature() {
         </div>
  
         {/* Right Column: Image and ChatGPT Panel Overlay */}
-        <div className="w-full lg:w-[55%] min-h-[45vh] lg:min-h-[650px] relative flex items-center justify-center p-6 sm:p-10 overflow-hidden">
+        <div className="w-full lg:w-1/2 min-h-[45vh] lg:min-h-[650px] relative flex items-center justify-center p-6 sm:p-12 md:p-16 overflow-hidden">
           
           {/* Background Image Container (Reduced & framed with rounded corners) */}
           <div className="absolute inset-3 sm:inset-4 rounded-[2rem] overflow-hidden z-0">

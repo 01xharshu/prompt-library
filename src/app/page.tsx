@@ -25,12 +25,12 @@ export default function Home() {
 
           {/* Text block — left side */}
           <div className="w-full md:w-1/2 flex flex-col items-start">
-            <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-[4.2rem] lg:text-[4.8rem] text-neutral-950 leading-[1.05] tracking-tight mb-6">
-              A <em className="italic">prompt</em> needs more than words. It needs a <span className="text-neutral-500 font-semibold">craft.</span>
+            <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-[3.8rem] lg:text-[4.4rem] text-neutral-950 leading-[1.1] tracking-tight font-bold mb-8">
+              A <em className="italic font-bold text-neutral-400">prompt</em> needs more than words. <br className="hidden lg:block"/>It needs a <span className="text-neutral-500">craft.</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-neutral-600 font-light leading-relaxed max-w-md mb-10">
-              Copy production-ready AI prompts, guided by creators who've shipped before.
+              Copy production-ready AI prompts, curated directly from social media platforms and top creators.
             </p>
 
             {/* CTA buttons */}

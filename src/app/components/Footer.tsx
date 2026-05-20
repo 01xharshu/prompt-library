@@ -29,8 +29,8 @@ export default function Footer() {
           
           {/* Hero Column: Large statement and Newsletter input */}
           <div className="lg:col-span-7 space-y-8 text-left">
-            <h3 className="font-serif-custom text-3xl sm:text-4xl text-neutral-950 tracking-tight leading-tight max-w-md">
-              Unleash the craft of <em className="italic font-light text-neutral-500">engineered prompts.</em>
+            <h3 className="font-serif-custom text-3xl sm:text-4xl text-neutral-950 tracking-tight leading-tight font-bold max-w-md">
+              Unleash the craft of <em className="italic font-bold text-neutral-400">engineered prompts.</em>
             </h3>
             
             <div className="space-y-3 max-w-sm">
@@ -45,7 +45,7 @@ export default function Footer() {
                   placeholder="Enter email address..."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white border border-neutral-200 rounded-full pl-5 pr-14 py-3 text-xs focus:outline-none focus:border-neutral-400 focus:ring-1 focus:ring-neutral-400 transition-all font-mono"
+                  className="w-full bg-white border border-neutral-200 rounded-full pl-5 pr-14 py-3 text-xs focus:outline-none focus:border-neutral-400 focus:ring-1 focus:ring-neutral-400 transition-all font-sans"
                   required
                 />
                 <button
@@ -70,35 +70,6 @@ export default function Footer() {
           {/* Links Column Group */}
           <div className="lg:col-span-5 grid grid-cols-2 gap-8 w-full">
             
-            {/* Category Links */}
-            <div className="space-y-4 text-left">
-              <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest select-none">
-                Categories
-              </h4>
-              <ul className="space-y-2.5">
-                <li>
-                  <Link href="/prompts" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
-                    UI Design
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prompts" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
-                    Technical Coding
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prompts" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
-                    Creative Writing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prompts" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
-                    Midjourney Assets
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
             {/* Platform Links */}
             <div className="space-y-4 text-left">
               <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest select-none">
@@ -120,9 +91,28 @@ export default function Footer() {
                     How It Works
                   </a>
                 </li>
+              </ul>
+            </div>
+
+            {/* Connect Links */}
+            <div className="space-y-4 text-left">
+              <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest select-none">
+                Connect
+              </h4>
+              <ul className="space-y-2.5">
                 <li>
-                  <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
-                    Twitter Feed
+                  <a href="https://x.com/heyaharshu" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
+                    X / Twitter
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/01xharshu" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a href="https://linkedin.com/in/heyaharshu" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-neutral-950 text-xs font-light transition-colors">
+                    LinkedIn
                   </a>
                 </li>
               </ul>
@@ -138,21 +128,24 @@ export default function Footer() {
             <Link href="/" className="font-serif-custom text-xl font-bold tracking-tight text-neutral-950">
               PromptLib<span className="text-neutral-400 font-sans font-light">.</span>
             </Link>
-            <span className="text-[10px] text-neutral-400 font-mono tracking-wider select-none uppercase hidden sm:block">
+            <span className="text-[10px] text-neutral-400 font-sans tracking-wider select-none uppercase hidden sm:block">
               © {new Date().getFullYear()} PROMPTLIB
             </span>
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-500 select-none uppercase">
+            <div className="flex items-center gap-2 text-[10px] font-sans text-neutral-500 select-none uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Operational
             </div>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-[10px] font-mono text-neutral-400 hover:text-neutral-900 transition-colors uppercase">
+            <a href="https://github.com/01xharshu" target="_blank" rel="noreferrer" className="text-[10px] font-sans text-neutral-400 hover:text-neutral-900 transition-colors uppercase">
               GitHub
             </a>
-            <a href="https://discord.com" target="_blank" rel="noreferrer" className="text-[10px] font-mono text-neutral-400 hover:text-neutral-900 transition-colors uppercase">
-              Discord
+            <a href="https://x.com/heyaharshu" target="_blank" rel="noreferrer" className="text-[10px] font-sans text-neutral-400 hover:text-neutral-900 transition-colors uppercase">
+              X / Twitter
+            </a>
+            <a href="https://linkedin.com/in/heyaharshu" target="_blank" rel="noreferrer" className="text-[10px] font-sans text-neutral-400 hover:text-neutral-900 transition-colors uppercase">
+              LinkedIn
             </a>
           </div>
         </div>

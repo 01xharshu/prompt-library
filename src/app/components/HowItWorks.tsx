@@ -54,15 +54,15 @@ export default function HowItWorks() {
       {/* Background Grid Accent */}
       <div className="absolute inset-0 z-0 pointer-events-none hero-grid opacity-30" />
       
-      <div className="max-w-5xl mx-auto px-6 sm:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-8 sm:px-12 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="text-xs font-bold text-neutral-400 tracking-[0.2em] uppercase mb-4 select-none">
+          <div className="text-[10px] font-bold text-neutral-400 tracking-[0.2em] uppercase mb-4 select-none">
             Workflow Guide
           </div>
-          <h2 className="font-serif-custom text-4xl sm:text-5xl text-neutral-950 tracking-tight mb-6">
-            Get Started in <em className="italic">3 Steps</em>
+          <h2 className="font-serif-custom text-4xl sm:text-5xl text-neutral-950 tracking-tight leading-tight font-bold mb-6">
+            Get Started in <em className="italic font-bold text-neutral-400">3 Steps</em>
           </h2>
           <p className="text-neutral-500 font-light leading-relaxed text-sm">
             PromptLib bridges the gap between raw input and masterfully engineered results. Follow this simple path to elevate your outputs.
@@ -70,10 +70,10 @@ export default function HowItWorks() {
         </div>
 
         {/* Master Card Container */}
-        <div className="w-full bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-6 md:p-10 flex flex-col gap-8">
+        <div className="w-full bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-8 md:p-12 lg:p-16 flex flex-col gap-8">
           
           {/* Horizontal Step Tabs */}
-          <div className="grid grid-cols-1 md:grid-cols-3 border-b border-neutral-100 pb-6 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 border-b border-neutral-100 pb-8 gap-4">
             {steps.map((step) => {
               const isActive = activeStep === step.id;
               return (
@@ -86,13 +86,13 @@ export default function HowItWorks() {
                       : "bg-transparent border-transparent hover:bg-neutral-50/50"
                   }`}
                 >
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-all ${
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-sans text-xs font-bold transition-all ${
                     isActive ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-400"
                   }`}>
                     {step.num}
                   </div>
                   <div>
-                    <h3 className="font-bold text-neutral-900 text-sm leading-snug">{step.title}</h3>
+                    <h3 className="font-bold text-neutral-900 text-base tracking-tight leading-snug">{step.title}</h3>
                     <p className="text-[11px] text-neutral-400 font-light mt-0.5 leading-none">{step.shortDesc}</p>
                   </div>
                 </button>
@@ -106,10 +106,10 @@ export default function HowItWorks() {
             {/* Details Panel (Left) */}
             <div className="w-full lg:w-[35%] flex flex-col justify-between py-2">
               <div className="space-y-4">
-                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] block">
                   Step {steps[activeStep - 1].num} / {steps[activeStep - 1].tag}
                 </span>
-                <h3 className="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">
+                <h3 className="text-2xl font-serif-custom text-neutral-950 tracking-tight leading-tight">
                   {steps[activeStep - 1].title}
                 </h3>
                 <p className="text-neutral-500 text-sm leading-relaxed font-light">
@@ -162,7 +162,7 @@ export default function HowItWorks() {
                       </div>
                       <div className="bg-neutral-50 border border-neutral-200/80 rounded-xl p-3 flex items-center gap-3">
                         <Search className="w-4 h-4 text-neutral-400 flex-shrink-0" />
-                        <span className="text-xs text-neutral-400 font-mono truncate">Search prompts...</span>
+                        <span className="text-xs text-neutral-400 font-sans truncate">Search prompts...</span>
                       </div>
                       
                       {/* Grid of mini cards */}
@@ -187,7 +187,7 @@ export default function HowItWorks() {
                         <span className="text-[9px] text-neutral-500 bg-amber-50 border border-amber-200/60 text-amber-800 font-bold px-2 py-0.5 rounded-full">[Type]</span>
                       </div>
                       <div className="bg-neutral-50 border border-neutral-200/80 rounded-xl p-4">
-                        <p className="text-[11px] text-neutral-600 font-mono leading-relaxed">
+                        <p className="text-[11px] text-neutral-600 font-sans leading-relaxed">
                           Act as a frontend developer. Code a <span className="bg-[#e8e2d7] text-neutral-900 px-1 py-0.5 rounded font-bold">[Type]</span> button component with glassmorphism using Tailwind CSS.
                         </p>
                       </div>
@@ -230,7 +230,7 @@ export default function HowItWorks() {
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <div className="bg-neutral-50 rounded-xl p-3 border border-neutral-200/40 text-[10px] text-neutral-500 font-mono">
+                        <div className="bg-neutral-50 rounded-xl p-3 border border-neutral-200/40 text-[10px] text-neutral-500 font-sans">
                           &gt; Paste prompt with variables...
                         </div>
                         <div className="bg-neutral-950 text-white rounded-xl p-3 text-[10px] leading-relaxed shadow-sm font-sans flex items-start gap-2 border border-neutral-800">

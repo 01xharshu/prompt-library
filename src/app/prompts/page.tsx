@@ -322,7 +322,7 @@ export default function PromptsFeed() {
           className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-neutral-500" />
-          Gateway
+          Home
         </Link>
       </div>
 
@@ -339,11 +339,11 @@ export default function PromptsFeed() {
 
       {/* D. Page Header Block */}
       <header className="w-full max-w-6xl mx-auto px-6 pt-28 pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight uppercase text-neutral-950 leading-[0.9] mb-4">
-          Copy. Paste. <span className="text-neutral-400">Generate.</span>
+        <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-7xl text-neutral-950 tracking-tight leading-tight font-bold mb-4">
+          Copy. Paste. <em className="italic font-bold text-neutral-400">Generate.</em>
         </h1>
-        <p className="text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-neutral-500 font-bold max-w-lg mt-1 select-none">
-          Curated Production-Ready AI Prompts
+        <p className="text-[10px] font-bold text-neutral-400 tracking-[0.2em] uppercase max-w-lg mt-2 select-none">
+          Curated Prompts from Social Media & Top Creators
         </p>
       </header>
 
@@ -507,13 +507,13 @@ export default function PromptsFeed() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-3xl font-black tracking-tight uppercase text-neutral-950 leading-tight mb-6">
+                  <h2 className="font-serif-custom text-3xl md:text-4xl text-neutral-950 font-bold tracking-tight leading-tight mb-6">
                     {activePrompt.title}
                   </h2>
 
                   {/* Code Editor Box containing prompt */}
                   <div className="mb-6">
-                    <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-mono text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed no-scrollbar">
+                    <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-sans text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed no-scrollbar">
                       {activePrompt.promptText}
                     </div>
                   </div>
