@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Download, Heart, ArrowLeft, X, Check, Search, Filter } from "lucide-react";
+import { Copy, Download, Heart, ArrowLeft, X, Check, Search, Filter, Dices, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 import promptData from "@/data/prompts.json";
@@ -165,10 +165,38 @@ export default function PromptsFeed() {
 
   // Search and Layout states
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeVibe, setActiveVibe] = useState<string | null>(null);
+
+  // Vibe Extraction Logic
+  const VIBE_KEYWORDS = ["3d", "anime", "cinematic", "cyberpunk", "minimalist", "neon", "photorealistic", "abstract", "vintage", "fantasy"];
+  
+  const availableVibes = React.useMemo(() => {
+    const vibes = new Set<string>();
+    prompts.forEach(p => {
+      const text = p.promptText.toLowerCase();
+      VIBE_KEYWORDS.forEach(v => {
+        if (text.includes(v)) vibes.add(v.charAt(0).toUpperCase() + v.slice(1));
+      });
+    });
+    return Array.from(vibes);
+  }, [prompts]);
+
+  // Shuffle Logic
+  const shufflePrompts = () => {
+    setPrompts(prev => {
+      const shuffled = [...prev];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    });
+  };
 
   // Clear filters helper
   const clearAllFilters = () => {
     setSearchQuery("");
+    setActiveVibe(null);
   };
 
   // Select dynamic columns class
@@ -178,17 +206,19 @@ export default function PromptsFeed() {
 
   // Filtered prompts list
   const filteredPrompts = prompts.filter(item => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    return (
-      item.title.toLowerCase().includes(query) ||
-      item.promptText.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query) ||
-      item.category.toLowerCase().includes(query)
+    const queryMatch = !searchQuery.trim() || (
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.promptText.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    
+    const vibeMatch = !activeVibe || item.promptText.toLowerCase().includes(activeVibe.toLowerCase());
+    
+    return queryMatch && vibeMatch;
   });
 
-  const activeFiltersCount = searchQuery.trim() ? 1 : 0;
+  const activeFiltersCount = (searchQuery.trim() ? 1 : 0) + (activeVibe ? 1 : 0);
 
   // Fetch prompts from GitHub JSON API with local fallback
   useEffect(() => {
@@ -392,38 +422,68 @@ export default function PromptsFeed() {
       </header>
 
       {/* Search and Filters Control Panel */}
-      <section className="w-full max-w-6xl mx-auto px-6 mb-12 flex items-center justify-start gap-4 select-none relative z-20">
-        {/* Search Pill (Image 5 Style) */}
-        <div className="pill-search-container">
-          <input
-            type="text"
-            placeholder="Search prompts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pill-search-input"
-          />
-          <button className="pill-search-btn" title="Search">
-            <Search className="w-4 h-4" />
+      <section className="w-full max-w-6xl mx-auto px-6 mb-8 flex flex-col items-center justify-center gap-6 select-none relative z-20">
+        <div className="flex flex-wrap items-center justify-center gap-4 w-full">
+          {/* Search Pill */}
+          <div className="pill-search-container w-full sm:w-auto">
+            <input
+              type="text"
+              placeholder="Search prompts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pill-search-input"
+            />
+            <button className="pill-search-btn" title="Search">
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Shuffle Button */}
+          <button 
+            onClick={shufflePrompts}
+            className="flex items-center gap-2 px-5 py-3 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
+          >
+            <Dices className="w-4 h-4" />
+            Shuffle
           </button>
+
+          {/* Filter Pill */}
+          {activeFiltersCount > 0 && (
+            <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
+              <div className="pill-filter-label">
+                <Filter className="w-4 h-4 text-neutral-500" />
+                Filter
+                <span className="pill-filter-dot">•</span>
+                <span className="pill-filter-badge">{activeFiltersCount}</span>
+              </div>
+              <div className="pill-filter-divider" />
+              <button 
+                onClick={clearAllFilters}
+                className="pill-filter-close"
+                title="Clear Filters"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Filter Pill (Image 4 Style) - Only visible if filters active */}
-        {activeFiltersCount > 0 && (
-          <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
-            <div className="pill-filter-label">
-              <Filter className="w-4 h-4 text-neutral-500" />
-              Filter
-              <span className="pill-filter-dot">•</span>
-              <span className="pill-filter-badge">{activeFiltersCount}</span>
-            </div>
-            <div className="pill-filter-divider" />
-            <button 
-              onClick={clearAllFilters}
-              className="pill-filter-close"
-              title="Clear Filters"
-            >
-              <X className="w-4 h-4" />
-            </button>
+        {/* Vibes Filter Horizontal Scroll */}
+        {availableVibes.length > 0 && (
+          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto pb-2 gap-2 no-scrollbar px-2">
+            {availableVibes.map(vibe => (
+              <button
+                key={vibe}
+                onClick={() => setActiveVibe(activeVibe === vibe ? null : vibe)}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                  activeVibe === vibe 
+                  ? "bg-neutral-900 text-white border-neutral-900 shadow-md" 
+                  : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                }`}
+              >
+                {vibe}
+              </button>
+            ))}
           </div>
         )}
       </section>
@@ -497,7 +557,7 @@ export default function PromptsFeed() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 md:p-10 select-none overflow-y-auto"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-0 sm:p-6 md:p-10 select-none overflow-y-auto"
             onClick={() => setActivePrompt(null)}
           >
             {/* Modal Container */}
@@ -506,14 +566,14 @@ export default function PromptsFeed() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 320, damping: 28 }}
-              className="max-w-5xl w-full rounded-[2.5rem] bg-white border border-neutral-200/85 shadow-2xl overflow-hidden flex flex-col md:flex-row relative pointer-events-auto"
+              className="max-w-5xl w-full min-h-screen sm:min-h-0 sm:rounded-[2.5rem] bg-white sm:border border-neutral-200/85 shadow-2xl overflow-x-hidden overflow-y-auto flex flex-col md:flex-row relative pointer-events-auto"
               onClick={(e) => e.stopPropagation()} // Prevent close on background click
             >
 
-              {/* Close Button top-right */}
+              {/* Close Button top-right (Fixed for Mobile) */}
               <button
                 onClick={() => setActivePrompt(null)}
-                className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-neutral-100 hover:bg-neutral-200 border border-neutral-200/60 flex items-center justify-center text-neutral-700 transition-all duration-300 hover:scale-110 active:scale-95"
+                className="fixed sm:absolute top-4 right-4 sm:top-6 sm:right-6 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md sm:bg-neutral-100 hover:bg-neutral-200 border border-neutral-200/60 flex items-center justify-center text-neutral-700 transition-all duration-300 hover:scale-110 active:scale-95 shadow-sm"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -577,9 +637,9 @@ export default function PromptsFeed() {
                     Prompt Actions
                   </h4>
 
-                  <div className="grid grid-cols-2 gap-3 select-none">
+                  <div className="grid grid-cols-2 gap-3 select-none mb-3">
 
-                    {/* Copy Plain Text */}
+                    {/* Copy Prompt Text */}
                     <button
                       onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
                       className="btn-pill btn-pill-black text-xs"
@@ -592,7 +652,7 @@ export default function PromptsFeed() {
                       ) : (
                         <>
                           <Copy className="w-3.5 h-3.5" />
-                          Copy Plain
+                          Copy Prompt
                         </>
                       )}
                     </button>
@@ -609,7 +669,35 @@ export default function PromptsFeed() {
                       <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
                       {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
                     </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 select-none mb-3">
+                    {/* Open in ChatGPT */}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(activePrompt.promptText, activePrompt.id);
+                        window.open(`https://chatgpt.com/?q=${encodeURIComponent(activePrompt.promptText)}`, "_blank");
+                      }}
+                      className="flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold bg-[#10a37f]/10 text-[#10a37f] rounded-full hover:bg-[#10a37f]/20 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Open in ChatGPT
+                    </button>
 
+                    {/* Open in Gemini */}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(activePrompt.promptText, activePrompt.id);
+                        window.open("https://gemini.google.com/app", "_blank");
+                      }}
+                      className="flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold bg-[#1d4ed8]/10 text-[#1d4ed8] rounded-full hover:bg-[#1d4ed8]/20 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Open in Gemini
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 select-none">
                     {/* Download TXT file */}
                     <button
                       onClick={() => downloadAsTxt(activePrompt.title, activePrompt.promptText)}
