@@ -166,6 +166,7 @@ export default function PromptsFeed() {
   // Search and Layout states
   const [searchQuery, setSearchQuery] = useState("");
   const [activeVibe, setActiveVibe] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Vibe Extraction Logic
   const VIBE_KEYWORDS = ["3d", "anime", "cinematic", "cyberpunk", "minimalist", "neon", "photorealistic", "abstract", "vintage", "fantasy"];
@@ -181,17 +182,7 @@ export default function PromptsFeed() {
     return Array.from(vibes);
   }, [prompts]);
 
-  // Shuffle Logic
-  const shufflePrompts = () => {
-    setPrompts(prev => {
-      const shuffled = [...prev];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    });
-  };
+
 
   // Clear filters helper
   const clearAllFilters = () => {
@@ -304,6 +295,11 @@ export default function PromptsFeed() {
           };
         });
 
+        // Shuffle the fetched array automatically
+        for (let i = mappedData.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [mappedData[i], mappedData[j]] = [mappedData[j], mappedData[i]];
+        }
         setPrompts(mappedData);
       } catch (err: any) {
         console.error("Failed to load live prompts feed:", err);
@@ -322,6 +318,11 @@ export default function PromptsFeed() {
           saves: item.saves || "350",
           author: item.author || { name: "Local Creator", avatar: "LC" }
         }));
+        // Shuffle fallback array automatically
+        for (let i = localMapped.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [localMapped[i], localMapped[j]] = [localMapped[j], localMapped[i]];
+        }
         setPrompts(localMapped);
       } finally {
         setLoading(false);
@@ -422,7 +423,7 @@ export default function PromptsFeed() {
       </header>
 
       {/* Search and Filters Control Panel */}
-      <section className="w-full max-w-6xl mx-auto px-6 mb-8 flex flex-col items-center justify-center gap-6 select-none relative z-20">
+      <section className="w-full max-w-6xl mx-auto px-6 mb-8 flex flex-col items-center justify-center gap-4 select-none relative z-20">
         <div className="flex flex-wrap items-center justify-center gap-4 w-full">
           {/* Search Pill */}
           <div className="pill-search-container w-full sm:w-auto">
@@ -438,54 +439,65 @@ export default function PromptsFeed() {
             </button>
           </div>
 
-          {/* Shuffle Button */}
+          {/* Filter Toggle Button */}
           <button 
-            onClick={shufflePrompts}
-            className="flex items-center gap-2 px-5 py-3 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-5 py-3 rounded-full border text-sm font-semibold transition-all active:scale-95 shadow-sm hover:shadow-md ${
+              showFilters || activeVibe
+                ? "bg-neutral-900 text-white border-neutral-900" 
+                : "bg-white text-neutral-700 border-neutral-200 hover:border-neutral-300"
+            }`}
           >
-            <Dices className="w-4 h-4" />
-            Shuffle
+            <Filter className="w-4 h-4" />
+            Filter
+            {activeVibe && (
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-neutral-900 text-[10px] ml-1 font-bold shadow-sm">
+                1
+              </span>
+            )}
           </button>
-
-          {/* Filter Pill */}
-          {activeFiltersCount > 0 && (
-            <div className="pill-filter-container animate-in fade-in zoom-in-95 duration-200">
-              <div className="pill-filter-label">
-                <Filter className="w-4 h-4 text-neutral-500" />
-                Filter
-                <span className="pill-filter-dot">•</span>
-                <span className="pill-filter-badge">{activeFiltersCount}</span>
-              </div>
-              <div className="pill-filter-divider" />
-              <button 
-                onClick={clearAllFilters}
-                className="pill-filter-close"
-                title="Clear Filters"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+          
+          {/* Clear Filters (only if filters are active) */}
+          {(searchQuery.trim() || activeVibe) && (
+            <button 
+              onClick={clearAllFilters}
+              className="flex items-center gap-2 px-4 py-3 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-500 shadow-sm hover:bg-neutral-50 transition-all active:scale-95"
+              title="Clear Filters"
+            >
+              <X className="w-4 h-4" />
+              Clear
+            </button>
           )}
         </div>
 
-        {/* Vibes Filter Horizontal Scroll */}
-        {availableVibes.length > 0 && (
-          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto pb-2 gap-2 no-scrollbar px-2">
-            {availableVibes.map(vibe => (
-              <button
-                key={vibe}
-                onClick={() => setActiveVibe(activeVibe === vibe ? null : vibe)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border ${
-                  activeVibe === vibe 
-                  ? "bg-neutral-900 text-white border-neutral-900 shadow-md" 
-                  : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
-                }`}
-              >
-                {vibe}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Vibes Filter Vertical Slide - Animates in when showFilters is true */}
+        <AnimatePresence>
+          {showFilters && availableVibes.length > 0 && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0, y: -10 }}
+              animate={{ height: "auto", opacity: 1, y: 0 }}
+              exit={{ height: 0, opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="w-full overflow-hidden"
+            >
+              <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto pb-4 pt-2 gap-2 no-scrollbar px-2">
+                {availableVibes.map(vibe => (
+                  <button
+                    key={vibe}
+                    onClick={() => setActiveVibe(activeVibe === vibe ? null : vibe)}
+                    className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                      activeVibe === vibe 
+                      ? "bg-neutral-900 text-white border-neutral-900 shadow-md" 
+                      : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                    }`}
+                  >
+                    {vibe}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       {/* E. Pinterest Masonry Feed Grid */}
@@ -642,11 +654,11 @@ export default function PromptsFeed() {
                     {/* Copy Prompt Text */}
                     <button
                       onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
-                      className="btn-pill btn-pill-black text-xs"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                       {copiedId === activePrompt.id ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
                           Copied!
                         </>
                       ) : (
@@ -660,10 +672,10 @@ export default function PromptsFeed() {
                     {/* Toggle Save state */}
                     <button
                       onClick={() => toggleSave(activePrompt.id)}
-                      className={`flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold transition-colors select-none ${
+                      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border bg-white text-xs font-bold shadow-sm hover:shadow-md transition-all active:scale-95 ${
                         savedPromptIds.includes(activePrompt.id)
-                          ? "text-[#c5a044] hover:text-[#b08d36]"
-                          : "text-neutral-900 hover:text-neutral-600"
+                          ? "border-[#c5a044]/30 text-[#c5a044]"
+                          : "border-neutral-200 text-neutral-700"
                       }`}
                     >
                       <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
@@ -678,7 +690,7 @@ export default function PromptsFeed() {
                         copyToClipboard(activePrompt.promptText, activePrompt.id);
                         window.open(`https://chatgpt.com/?q=${encodeURIComponent(activePrompt.promptText)}`, "_blank");
                       }}
-                      className="flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold bg-[#10a37f]/10 text-[#10a37f] rounded-full hover:bg-[#10a37f]/20 transition-colors"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-[#10a37f] shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Open in ChatGPT
@@ -690,7 +702,7 @@ export default function PromptsFeed() {
                         copyToClipboard(activePrompt.promptText, activePrompt.id);
                         window.open("https://gemini.google.com/app", "_blank");
                       }}
-                      className="flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold bg-[#1d4ed8]/10 text-[#1d4ed8] rounded-full hover:bg-[#1d4ed8]/20 transition-colors"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-[#1d4ed8] shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Open in Gemini
@@ -701,7 +713,7 @@ export default function PromptsFeed() {
                     {/* Download TXT file */}
                     <button
                       onClick={() => downloadAsTxt(activePrompt.title, activePrompt.promptText)}
-                      className="flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold text-neutral-900 hover:text-neutral-600 transition-colors"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                       <Download className="w-3.5 h-3.5" />
                       Download TXT
@@ -710,7 +722,7 @@ export default function PromptsFeed() {
                     {/* Download DOC file */}
                     <button
                       onClick={() => downloadAsDoc(activePrompt.title, activePrompt.promptText)}
-                      className="flex items-center justify-center gap-2 py-3 px-4 text-xs font-bold text-neutral-900 hover:text-neutral-600 transition-colors"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                       <Download className="w-3.5 h-3.5" />
                       Download DOC
