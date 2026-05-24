@@ -50,11 +50,11 @@ export default function HowItWorks() {
   };
 
   return (
-    <section className="w-full bg-white text-neutral-900 font-sans py-20 border-t border-neutral-100 relative">
+    <section className="w-full bg-white text-neutral-900 font-sans py-12 sm:py-20 border-t border-neutral-100 relative">
       {/* Background Grid Accent */}
       <div className="absolute inset-0 z-0 pointer-events-none hero-grid opacity-30" />
       
-      <div className="max-w-7xl mx-auto px-8 sm:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-5 sm:px-12 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -70,10 +70,10 @@ export default function HowItWorks() {
         </div>
 
         {/* Master Card Container */}
-        <div className="w-full bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-8 md:p-12 lg:p-16 flex flex-col gap-8">
+        <div className="w-full bg-white rounded-3xl sm:rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-5 sm:p-12 lg:p-16 flex flex-col gap-6 sm:gap-8">
           
           {/* Horizontal Step Tabs */}
-          <div className="grid grid-cols-1 md:grid-cols-3 border-b border-neutral-100 pb-8 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 border-b border-neutral-100 pb-6 sm:pb-8 gap-4">
             {steps.map((step) => {
               const isActive = activeStep === step.id;
               return (
@@ -117,10 +117,10 @@ export default function HowItWorks() {
                 </p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-neutral-100">
+              <div className="mt-6 sm:mt-8 pt-4 border-t border-neutral-100">
                 <a 
                   href="/prompts" 
-                  className="btn-pill btn-pill-white flex items-center justify-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm cursor-pointer inline-flex w-fit"
+                  className="btn-pill btn-pill-white w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold uppercase py-3 sm:py-2.5 px-6 border border-neutral-200/80 shadow-sm cursor-pointer"
                 >
                   Explore Feed
                   <ArrowRight className="w-3.5 h-3.5 text-neutral-500" />
@@ -129,7 +129,7 @@ export default function HowItWorks() {
             </div>
 
             {/* Mockup Workspace Preview (Right) */}
-            <div className="w-full lg:w-[65%] rounded-[1.8rem] border border-neutral-200/40 p-6 md:p-8 flex items-center justify-center relative overflow-hidden min-h-[340px] select-none">
+            <div className="w-full lg:w-[65%] rounded-2xl sm:rounded-[1.8rem] border border-neutral-200/40 p-4 sm:p-8 flex items-center justify-center relative overflow-hidden min-h-[340px] select-none">
               
               {/* Background Image Container */}
               <div className="absolute inset-0 z-0">
@@ -145,7 +145,7 @@ export default function HowItWorks() {
               <div className="relative w-full max-w-sm z-10 flex justify-center">
                 
                 {/* 1. Large Frosted Glass Background Card (Behind, perfectly centered) */}
-                <div className="absolute -inset-4 rounded-[1.6rem] bg-white/5 backdrop-blur-[20px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-0" />
+                <div className="absolute -inset-2 sm:-inset-4 rounded-[1.6rem] bg-white/5 backdrop-blur-[20px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-0" />
      
                 {/* 2. Dynamic Mockup Card (Front, perfectly concentric) */}
                 <div className="relative z-10 w-full">
@@ -191,20 +191,20 @@ export default function HowItWorks() {
                           Act as a frontend developer. Code a <span className="bg-[#e8e2d7] text-neutral-900 px-1 py-0.5 rounded font-bold">[Type]</span> button component with glassmorphism using Tailwind CSS.
                         </p>
                       </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex gap-2">
-                          <button className="flex items-center gap-1 text-[9px] font-bold py-1.5 px-3 border border-neutral-200 rounded-lg hover:bg-neutral-50 cursor-default" title="Download Text">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex gap-2 justify-center sm:justify-start">
+                          <button className="flex items-center justify-center flex-1 sm:flex-initial gap-1 text-[9px] font-bold py-1.5 px-3 border border-neutral-200 rounded-lg hover:bg-neutral-50 cursor-default" title="Download Text">
                             <FileText className="w-3.5 h-3.5 text-neutral-500" />
                             TXT
                           </button>
-                          <button className="flex items-center gap-1 text-[9px] font-bold py-1.5 px-3 border border-neutral-200 rounded-lg hover:bg-neutral-50 cursor-default" title="Download Document">
+                          <button className="flex items-center justify-center flex-1 sm:flex-initial gap-1 text-[9px] font-bold py-1.5 px-3 border border-neutral-200 rounded-lg hover:bg-neutral-50 cursor-default" title="Download Document">
                             <Layout className="w-3.5 h-3.5 text-neutral-500" />
                             DOC
                           </button>
                         </div>
                         <button 
                           onClick={handleCopy}
-                          className="flex items-center gap-2 py-2 px-4 rounded-xl bg-neutral-950 text-white text-[10px] font-bold shadow-md cursor-pointer active:scale-95 transition-all"
+                          className="flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-neutral-950 text-white text-[10px] font-bold shadow-md cursor-pointer active:scale-95 transition-all w-full sm:w-auto"
                         >
                           {copied ? (
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">

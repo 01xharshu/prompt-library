@@ -33,8 +33,8 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-50 w-full flex justify-center px-6 pointer-events-none">
-      <nav className="pointer-events-auto flex items-center gap-6 sm:gap-12 glass-noise-pill rounded-full shadow-[0_12px_36px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.01)] px-5 py-2 sm:px-6 sm:py-2.5 transition-all duration-300">
+    <div className="fixed top-6 left-0 right-0 z-50 w-full flex justify-center px-4 sm:px-6 pointer-events-none">
+      <nav className="pointer-events-auto flex items-center gap-3 sm:gap-12 glass-noise-pill rounded-full shadow-[0_12px_36px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.01)] px-3.5 sm:px-6 py-2 sm:py-2.5 transition-all duration-300">
         {/* Brand Logo / Title */}
         <Link href="/" className="flex items-center gap-2 select-none group">
           <span className="text-neutral-950 font-serif-custom text-xl font-bold tracking-tight">
@@ -43,16 +43,16 @@ export default function Navbar() {
         </Link>
 
         {/* Navigation Links */}
-        <div className="flex items-center gap-6 sm:gap-8">
+        <div className="flex items-center gap-4 sm:gap-8">
           <Link 
             href="/prompts" 
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-neutral-950 transition-colors"
+            className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-neutral-950 transition-colors"
           >
             Library
           </Link>
           <Link 
             href="/about" 
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-neutral-950 transition-colors"
+            className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-neutral-950 transition-colors"
           >
             About
           </Link>
@@ -67,12 +67,12 @@ export default function Navbar() {
           )}
           <button 
             onClick={handleBookmark}
-            className="btn-pill btn-pill-black text-[10px] font-sans font-bold uppercase tracking-[0.2em] py-1.5 px-4 border border-neutral-950 shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+            className="btn-pill btn-pill-black text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.2em] py-1.5 px-3 sm:px-4 border border-neutral-950 shadow-sm flex items-center gap-1 sm:gap-1.5 cursor-pointer active:scale-95 transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
             </svg>
-            Bookmark
+            <span className="hidden sm:inline">Bookmark</span>
           </button>
         </div>
       </nav>

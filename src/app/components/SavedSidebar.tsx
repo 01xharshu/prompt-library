@@ -68,7 +68,7 @@ export default function SavedSidebar({
             {/* Collapse Tab Button attached to left edge */}
             <button
               onClick={onClose}
-              className="absolute left-0 top-24 -translate-x-full bg-white border-y border-l border-neutral-200/80 shadow-[-6px_4px_16px_rgba(0,0,0,0.06)] hover:bg-neutral-50 text-neutral-500 hover:text-neutral-800 transition-all rounded-l-xl py-3.5 px-2 flex items-center justify-center cursor-pointer group"
+              className="hidden lg:flex absolute left-0 top-24 -translate-x-full bg-white border-y border-l border-neutral-200/80 shadow-[-6px_4px_16px_rgba(0,0,0,0.06)] hover:bg-neutral-50 text-neutral-500 hover:text-neutral-800 transition-all rounded-l-xl py-3.5 px-2 items-center justify-center cursor-pointer group"
               title="Collapse Sidebar"
             >
               <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -177,32 +177,7 @@ export default function SavedSidebar({
               )}
             </div>
 
-            {/* Sidebar Footer */}
-            {savedPrompts.length > 0 && (
-              <div className="p-6 border-t border-neutral-100 bg-neutral-50 select-none">
-                <button
-                  onClick={() => {
-                    const allPromptsText = savedPrompts
-                      .map((p) => `// ${p.title}\n${p.promptText}`)
-                      .join("\n\n");
-                    copyToClipboard(allPromptsText, "all-saved");
-                  }}
-                  className="w-full btn-pill btn-pill-black py-3.5 text-xs font-bold uppercase flex items-center justify-center gap-2 shadow-sm"
-                >
-                  {copiedId === "all-saved" ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      All Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" />
-                      Copy All Saved Prompts
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
+            {/* Sidebar Footer removed */}
           </motion.div>
         </>
       )}

@@ -21,23 +21,23 @@ export default function Home() {
         <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-100/50 via-transparent to-transparent pointer-events-none" />
 
         {/* Left-aligned content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 pt-32 sm:pt-40 pb-20 flex items-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 pt-32 sm:pt-40 pb-20 flex items-center">
 
           {/* Text block — left side */}
           <div className="w-full md:w-1/2 flex flex-col items-start">
-            <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-[3.8rem] lg:text-[4.4rem] text-neutral-950 leading-[1.1] tracking-tight font-bold mb-8">
+            <h1 className="font-serif-custom text-4xl sm:text-6xl md:text-[3.8rem] lg:text-[4.4rem] text-neutral-950 leading-[1.1] tracking-tight font-bold mb-8">
               A <em className="italic font-bold text-neutral-400">prompt</em> needs more than words. <br className="hidden lg:block"/>It needs a <span className="text-neutral-500">craft.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-neutral-600 font-light leading-relaxed max-w-md mb-10">
+            <p className="text-base sm:text-xl text-neutral-600 font-light leading-relaxed max-w-md mb-10">
               Copy production-ready AI prompts, curated directly from social media platforms and top creators.
             </p>
 
             {/* CTA buttons */}
-            <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a 
                 href="/prompts" 
-                className="btn-pill btn-pill-black flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-950 shadow-sm relative cursor-pointer"
+                className="btn-pill btn-pill-black w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold uppercase py-3 sm:py-2.5 px-6 border border-neutral-950 shadow-sm relative cursor-pointer"
               >
                 Browse Prompts
               </a>

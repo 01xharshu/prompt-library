@@ -159,6 +159,13 @@ export default function PromptsFeed() {
 
   // Active Detail Window State
   const [activePrompt, setActivePrompt] = useState<PromptItem | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const touchStartY = React.useRef(0);
+
+  // Reset modal expansion when active prompt changes
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [activePrompt]);
 
   // Copied Alert State (tracks which item id has just been copied)
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -385,16 +392,44 @@ export default function PromptsFeed() {
     element.click();
     document.body.removeChild(element);
   };
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    if (scrollTop > 30) {
+      setIsExpanded(true);
+    } else if (scrollTop <= 5) {
+      setIsExpanded(false);
+    }
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!isExpanded && e.deltaY > 0) {
+      setIsExpanded(true);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isExpanded) {
+      const touchEndY = e.touches[0].clientY;
+      const diffY = touchStartY.current - touchEndY;
+      if (diffY > 10) { // Swiped up
+        setIsExpanded(true);
+      }
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-white text-neutral-900 font-sans overflow-x-hidden">
       <div className={`transition-all duration-500 ease-in-out ${isSidebarOpen ? "lg:pr-[420px]" : ""}`}>
 
       {/* Back to Home Button (Top Left) */}
-      <div className="absolute sm:fixed top-6 left-6 sm:top-8 sm:left-8 z-40 select-none">
+      <div className="absolute sm:fixed top-4 left-4 sm:top-8 sm:left-8 z-40 select-none">
         <Link
           href="/"
-          className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm"
+          className="btn-pill btn-pill-white flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase py-2 px-4 sm:px-6 border border-neutral-200/80 shadow-sm"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-neutral-500" />
           Home
@@ -402,10 +437,10 @@ export default function PromptsFeed() {
       </div>
 
       {/* Saved Prompts Toggle Button (Top Right) */}
-      <div className={`absolute sm:fixed top-6 right-6 sm:top-8 sm:right-8 z-40 select-none transition-all duration-300 ${isSidebarOpen ? "opacity-0 scale-95 pointer-events-none" : "opacity-100"}`}>
+      <div className={`absolute sm:fixed top-4 right-4 sm:top-8 sm:right-8 z-40 select-none transition-all duration-300 ${isSidebarOpen ? "opacity-0 scale-95 pointer-events-none" : "opacity-100"}`}>
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm relative cursor-pointer"
+          className="btn-pill btn-pill-white flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase py-2 px-4 sm:px-6 border border-neutral-200/80 shadow-sm relative cursor-pointer"
         >
           <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
           Saved
@@ -413,7 +448,7 @@ export default function PromptsFeed() {
       </div>
 
       {/* D. Page Header Block */}
-      <header className="w-full max-w-6xl mx-auto px-6 pt-28 pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
+      <header className="w-full max-w-6xl mx-auto px-6 pt-20 sm:pt-28 pb-10 sm:pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
         <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-7xl text-neutral-950 tracking-tight leading-tight font-bold mb-4">
           Copy. Paste. <em className="italic font-bold text-neutral-400">Generate.</em>
         </h1>
@@ -566,11 +601,24 @@ export default function PromptsFeed() {
       <AnimatePresence>
         {activePrompt && (
           <motion.div
+            id="prompt-detail-modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-0 sm:p-6 md:p-10 select-none overflow-y-auto"
-            onClick={() => setActivePrompt(null)}
+            className={`fixed inset-0 z-50 transition-all duration-500 select-none overflow-y-auto ${
+              isExpanded
+                ? "bg-white backdrop-blur-none flex items-start justify-center p-0"
+                : "bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 md:p-10"
+            }`}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setActivePrompt(null);
+              }
+            }}
+            onScroll={handleScroll}
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
             {/* Modal Container */}
             <motion.div
@@ -578,7 +626,11 @@ export default function PromptsFeed() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 320, damping: 28 }}
-              className="max-w-5xl w-full min-h-screen sm:min-h-0 sm:rounded-[2.5rem] bg-white sm:border border-neutral-200/85 shadow-2xl overflow-x-hidden overflow-y-auto flex flex-col md:flex-row relative pointer-events-auto"
+              className={`w-full bg-white relative pointer-events-auto transition-all duration-500 ${
+                isExpanded
+                  ? "max-w-7xl min-h-screen rounded-none border-none shadow-none overflow-x-hidden flex flex-col"
+                  : "max-w-5xl min-h-0 rounded-[2.5rem] sm:border border-neutral-200/85 shadow-2xl overflow-x-hidden flex flex-col"
+              }`}
               onClick={(e) => e.stopPropagation()} // Prevent close on background click
             >
 
@@ -590,148 +642,188 @@ export default function PromptsFeed() {
                 <X className="w-5 h-5" />
               </button>
 
-              {/* Left Column: Visual presentation */}
-              <div className="w-full md:w-1/2 p-6 flex items-center justify-center bg-neutral-50 select-none border-b md:border-b-0 md:border-r border-neutral-200/60">
-                <img
-                  src={activePrompt.imagePath}
-                  alt={activePrompt.title}
-
-                  className="w-full h-auto max-h-[70vh] object-contain rounded-[1.5rem] shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] border border-neutral-200/60"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (!img.dataset.fallback) {
-                      img.dataset.fallback = "true";
-                      img.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
-                    }
-                  }}
-                />
-              </div>
-
-              {/* Right Column: Breadcrumbs and Prompt Editor Box */}
-              <div className="w-full md:w-1/2 p-8 flex flex-col justify-between text-neutral-900">
-
-                {/* Upper Details Block */}
-                <div>
-                  {/* Breadcrumb Navigation - clickable return to index feed */}
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-neutral-500 mb-6 select-none">
-                    <button
-                      onClick={() => setActivePrompt(null)}
-                      className="hover:text-neutral-900 transition-colors cursor-pointer"
-                    >
-                      Library
-                    </button>
-                    {activePrompt.category && (
-                      <>
-                        <span>/</span>
-                        <span className="text-neutral-400">{activePrompt.category}</span>
-                      </>
-                    )}
-                    <span>/</span>
-                    <span className="text-neutral-900 truncate max-w-[130px]">{activePrompt.title}</span>
-                  </div>
-
-                  {/* Title */}
-                  <h2 className="font-serif-custom text-3xl md:text-4xl text-neutral-950 font-bold tracking-tight leading-tight mb-6">
-                    {activePrompt.title}
-                  </h2>
-
-                  {/* Code Editor Box containing prompt */}
-                  <div className="mb-6">
-                    <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-sans text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed no-scrollbar">
-                      {activePrompt.promptText}
-                    </div>
-                  </div>
+              {/* Detail section wrapper */}
+              <div className="flex flex-col md:flex-row w-full border-b border-neutral-100">
+                {/* Left Column: Visual presentation */}
+                <div className="w-full md:w-1/2 p-6 flex items-center justify-center bg-neutral-50 select-none border-b md:border-b-0 md:border-r border-neutral-200/60">
+                  <img
+                    src={activePrompt.imagePath}
+                    alt={activePrompt.title}
+                    className="w-full h-auto max-h-[70vh] object-contain rounded-[1.5rem] shadow-[0_12px_30px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.03)] border border-neutral-200/60"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (!img.dataset.fallback) {
+                        img.dataset.fallback = "true";
+                        img.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600";
+                      }
+                    }}
+                  />
                 </div>
 
-                {/* Lower Action buttons grid */}
-                <div>
-                  <h4 className="text-[10px] font-bold tracking-widest uppercase text-neutral-400 mb-3 select-none">
-                    Prompt Actions
-                  </h4>
+                {/* Right Column: Breadcrumbs and Prompt Editor Box */}
+                <div className="w-full md:w-1/2 p-5 sm:p-8 flex flex-col justify-between text-neutral-900">
 
-                  <div className="grid grid-cols-2 gap-3 select-none mb-3">
-
-                    {/* Copy Prompt Text */}
-                    <button
-                      onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
-                    >
-                      {copiedId === activePrompt.id ? (
+                  {/* Upper Details Block */}
+                  <div>
+                    {/* Breadcrumb Navigation - clickable return to index feed */}
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-neutral-500 mb-6 select-none">
+                      <button
+                        onClick={() => setActivePrompt(null)}
+                        className="hover:text-neutral-900 transition-colors cursor-pointer"
+                      >
+                        Library
+                      </button>
+                      {activePrompt.category && (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          Copy Prompt
+                          <span>/</span>
+                          <span className="text-neutral-400">{activePrompt.category}</span>
                         </>
                       )}
-                    </button>
+                      <span>/</span>
+                      <span className="text-neutral-900 truncate max-w-[130px]">{activePrompt.title}</span>
+                    </div>
 
-                    {/* Toggle Save state */}
-                    <button
-                      onClick={() => toggleSave(activePrompt.id)}
-                      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border bg-white text-xs font-bold shadow-sm hover:shadow-md transition-all active:scale-95 ${
-                        savedPromptIds.includes(activePrompt.id)
-                          ? "border-[#c5a044]/30 text-[#c5a044]"
-                          : "border-neutral-200 text-neutral-700"
-                      }`}
-                    >
-                      <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
-                      {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
-                    </button>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 select-none mb-3">
-                    {/* Open in ChatGPT */}
-                    <button
-                      onClick={() => {
-                        copyToClipboard(activePrompt.promptText, activePrompt.id);
-                        window.open(`https://chatgpt.com/?q=${encodeURIComponent(activePrompt.promptText)}`, "_blank");
-                      }}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-[#10a37f] shadow-sm hover:shadow-md transition-all active:scale-95"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      Open in ChatGPT
-                    </button>
+                    {/* Title */}
+                    <h2 className="font-serif-custom text-3xl md:text-4xl text-neutral-950 font-bold tracking-tight leading-tight mb-6">
+                      {activePrompt.title}
+                    </h2>
 
-                    {/* Open in Gemini */}
-                    <button
-                      onClick={() => {
-                        copyToClipboard(activePrompt.promptText, activePrompt.id);
-                        window.open("https://gemini.google.com/app", "_blank");
-                      }}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-[#1d4ed8] shadow-sm hover:shadow-md transition-all active:scale-95"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      Open in Gemini
-                    </button>
+                    {/* Code Editor Box containing prompt */}
+                    <div className="mb-6">
+                      <div className="bg-neutral-50 border border-neutral-200/60 rounded-2xl p-5 font-sans text-sm text-neutral-800 select-all max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words leading-relaxed no-scrollbar">
+                        {activePrompt.promptText}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 select-none">
-                    {/* Download TXT file */}
-                    <button
-                      onClick={() => downloadAsTxt(activePrompt.title, activePrompt.promptText)}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      Download TXT
-                    </button>
+                  {/* Lower Action buttons grid */}
+                  <div>
+                    <h4 className="text-[10px] font-bold tracking-widest uppercase text-neutral-400 mb-3 select-none">
+                      Prompt Actions
+                    </h4>
 
-                    {/* Download DOC file */}
-                    <button
-                      onClick={() => downloadAsDoc(activePrompt.title, activePrompt.promptText)}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 bg-white text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      Download DOC
-                    </button>
+                    <div className="grid grid-cols-2 gap-3 select-none mb-3">
 
+                      {/* Copy Prompt Text */}
+                      <button
+                        onClick={() => copyToClipboard(activePrompt.promptText, activePrompt.id)}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-neutral-200 bg-white text-[10px] sm:text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        {copiedId === activePrompt.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-500" />
+                            Copied!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            Copy<span className="hidden sm:inline"> Prompt</span>
+                          </>
+                        )}
+                      </button>
+
+                      {/* Toggle Save state */}
+                      <button
+                        onClick={() => toggleSave(activePrompt.id)}
+                        className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border bg-white text-[10px] sm:text-xs font-bold shadow-sm hover:shadow-md transition-all active:scale-95 ${
+                          savedPromptIds.includes(activePrompt.id)
+                            ? "border-[#c5a044]/30 text-[#c5a044]"
+                            : "border-neutral-200 text-neutral-700"
+                        }`}
+                      >
+                        <Heart className={`w-3.5 h-3.5 ${savedPromptIds.includes(activePrompt.id) ? "fill-current" : ""}`} />
+                        {savedPromptIds.includes(activePrompt.id) ? "Saved" : "Save"}
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 select-none mb-3">
+                      {/* Open in ChatGPT */}
+                      <button
+                        onClick={() => {
+                          copyToClipboard(activePrompt.promptText, activePrompt.id);
+                          window.open(`https://chatgpt.com/?q=${encodeURIComponent(activePrompt.promptText)}`, "_blank");
+                        }}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-neutral-200 bg-white text-[10px] sm:text-xs font-bold text-[#10a37f] shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Open in </span>ChatGPT
+                      </button>
+
+                      {/* Open in Gemini */}
+                      <button
+                        onClick={() => {
+                          copyToClipboard(activePrompt.promptText, activePrompt.id);
+                          window.open("https://gemini.google.com/app", "_blank");
+                        }}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-neutral-200 bg-white text-[10px] sm:text-xs font-bold text-[#1d4ed8] shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Open in </span>Gemini
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 select-none">
+                      {/* Download TXT file */}
+                      <button
+                        onClick={() => downloadAsTxt(activePrompt.title, activePrompt.promptText)}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-neutral-200 bg-white text-[10px] sm:text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Download </span>TXT
+                      </button>
+
+                      {/* Download DOC file */}
+                      <button
+                        onClick={() => downloadAsDoc(activePrompt.title, activePrompt.promptText)}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-neutral-200 bg-white text-[10px] sm:text-xs font-bold text-neutral-700 shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Download </span>DOC
+                      </button>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Lower Section: Pinterest-style feed (More Prompts / Continue Browsing) */}
+              {isExpanded && (
+                <div className="w-full p-6 sm:p-8 md:p-10 bg-white border-t border-neutral-100 animate-in fade-in slide-in-from-bottom-8 duration-500">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8 select-none">
+                    <div>
+                      <h3 className="font-serif-custom text-2xl sm:text-3xl font-bold text-neutral-950">
+                        Explore More Prompts
+                      </h3>
+                      <p className="text-xs text-neutral-400 font-light mt-1">
+                        Continue browsing and discover other curated prompt templates
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest bg-neutral-50 border border-neutral-200/50 rounded-full px-3 py-1 w-fit">
+                      {filteredPrompts.length} Prompts
+                    </span>
+                  </div>
+
+                  {/* Pinterest Masonry Grid */}
+                  <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
+                    {filteredPrompts.map((item) => (
+                      <PromptCard
+                        key={item.id}
+                        item={item}
+                        copiedId={copiedId}
+                        copyToClipboard={copyToClipboard}
+                        setActivePrompt={(newItem) => {
+                          setActivePrompt(newItem);
+                          const backdropElement = document.getElementById("prompt-detail-modal-backdrop");
+                          if (backdropElement) {
+                            backdropElement.scrollTo({ top: 0, behavior: "smooth" });
+                          }
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
-
-              </div>
+              )}
 
             </motion.div>
           </motion.div>

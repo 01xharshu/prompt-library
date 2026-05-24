@@ -90,10 +90,10 @@ export default function LoyaltyFeature() {
 
   return (
     <section className="w-full bg-transparent text-gray-900 font-sans selection:bg-[#e8e2d7] selection:text-neutral-900 flex justify-center px-4 sm:px-6 lg:px-0">
-      <div className="w-full max-w-7xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-12">
+      <div className="w-full max-w-7xl flex flex-col lg:flex-row overflow-hidden bg-white rounded-3xl sm:rounded-[2.5rem] border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.03)] my-6 sm:my-12">
         
         {/* Left Column: Content */}
-        <div className="w-full lg:w-1/2 flex flex-col relative px-6 py-12 md:px-12 lg:px-16 lg:py-20 justify-between min-h-[60vh] lg:min-h-[650px]">
+        <div className="w-full lg:w-1/2 flex flex-col relative px-5 py-10 sm:px-12 lg:px-16 lg:py-20 justify-between min-h-[60vh] lg:min-h-[650px]">
           
           <div>
             {/* Header */}
@@ -140,7 +140,7 @@ export default function LoyaltyFeature() {
             {/* Pill button */}
             <a 
               href="/prompts" 
-              className="btn-pill btn-pill-white flex items-center gap-2 text-xs font-bold uppercase py-2.5 px-6 border border-neutral-200/80 shadow-sm mt-10 cursor-pointer inline-flex"
+              className="btn-pill btn-pill-white w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold uppercase py-3 sm:py-2.5 px-6 border border-neutral-200/80 shadow-sm mt-10 cursor-pointer"
             >
               Explore Library
             </a>
@@ -148,10 +148,10 @@ export default function LoyaltyFeature() {
         </div>
  
         {/* Right Column: Image and ChatGPT Panel Overlay */}
-        <div className="w-full lg:w-1/2 min-h-[45vh] lg:min-h-[650px] relative flex items-center justify-center p-6 sm:p-12 md:p-16 overflow-hidden">
+        <div className="w-full lg:w-1/2 min-h-[45vh] lg:min-h-[650px] relative flex items-center justify-center p-4 sm:p-12 md:p-16 overflow-hidden">
           
           {/* Background Image Container (Reduced & framed with rounded corners) */}
-          <div className="absolute inset-3 sm:inset-4 rounded-[2rem] overflow-hidden z-0">
+          <div className="absolute inset-2 sm:inset-4 rounded-[2rem] overflow-hidden z-0">
             <div 
               className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-[1.02]" 
               style={{ backgroundImage: "url('https://pbs.twimg.com/media/HGCCv44aoAIjwGL?format=jpg&name=4096x4096')" }}
@@ -164,7 +164,7 @@ export default function LoyaltyFeature() {
           <div className="relative w-full max-w-lg select-none z-10 transition-transform duration-500 hover:scale-[1.01] transform -translate-y-2">
             
             {/* 1. Large Frosted Glass Background Card (Behind, perfectly centered on all sides) */}
-            <div className="absolute -inset-4 sm:-inset-5 rounded-[1.6rem] bg-white/5 backdrop-blur-[20px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-0" />
+            <div className="absolute -inset-2 sm:-inset-5 rounded-[1.6rem] bg-white/5 backdrop-blur-[20px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-0" />
  
             {/* 2. Main Interactive ChatGPT Input Card (Front, perfectly concentric) */}
             <div className="relative z-10">
