@@ -21,7 +21,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-100/50 via-transparent to-transparent pointer-events-none" />
 
         {/* Left-aligned content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 pt-32 sm:pt-40 pb-20 flex items-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 pt-20 sm:pt-24 pb-16 flex items-center">
 
           {/* Text block — left side */}
           <div className="w-full md:w-1/2 flex flex-col items-start">
@@ -37,7 +37,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a 
                 href="/prompts" 
-                className="btn-pill btn-pill-black w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold uppercase py-3 sm:py-2.5 px-6 border border-neutral-950 shadow-sm relative cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-neutral-900 text-white text-sm font-semibold border border-neutral-900 shadow-sm hover:shadow-md hover:bg-neutral-800 transition-all duration-200 active:scale-95 cursor-pointer"
               >
                 Browse Prompts
               </a>
@@ -62,7 +62,7 @@ export default function Home() {
       </section>
 
       {/* ═══ VIDEO DEMO SECTION ═══ */}
-      <section className="relative w-full z-30 flex justify-center items-center pt-16 sm:pt-24 pb-20 px-4 sm:px-8">
+      <section className="relative w-full z-30 flex justify-center items-center pt-4 sm:pt-8 pb-20 px-4 sm:px-8 -mt-6 sm:-mt-10">
         <div className="w-full max-w-5xl rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] bg-white border border-neutral-200">
           <video
             src="/demo-video.mp4"
