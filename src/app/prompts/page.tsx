@@ -488,7 +488,7 @@ export default function PromptsFeed() {
         {/* D. Page Header Block */}
         <header className="w-full max-w-6xl mx-auto px-6 pt-20 sm:pt-28 pb-10 sm:pb-14 flex flex-col items-center justify-center text-center select-none relative z-20">
           <h1 className="font-serif-custom text-5xl sm:text-6xl md:text-7xl text-neutral-950 tracking-tight leading-tight font-bold mb-4">
-            Copy. Paste. <em className="italic font-bold text-neutral-400">Generate.</em>
+            Copy. Paste. <em className="italic font-bold animated-gradient-text">Generate.</em>
           </h1>
           <p className="text-[10px] font-bold text-neutral-400 tracking-[0.2em] uppercase max-w-lg mt-2 select-none">
             Curated Prompts from Social Media & Top Creators

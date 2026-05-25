@@ -549,3 +549,31 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(229, 229, 229, 0.85);
 }
+
+/* 6. Reusable Animated Gradient Text */
+@keyframes text-gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient-text {
+  background: linear-gradient(
+    to right,
+    #a3a3a3,
+    #262626,
+    #a3a3a3
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-gradient-move 3.5s ease-in-out infinite;
+}

@@ -52,6 +52,19 @@ const config: Config = {
       fontFamily: {
         sans: ["'Darker Grotesque'", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
       },
+      keyframes: {
+        "text-gradient": {
+          "0%, 100%": {
+            "background-position": "0% 50%",
+          },
+          "50%": {
+            "background-position": "100% 50%",
+          },
+        },
+      },
+      animation: {
+        "text-gradient": "text-gradient 4s ease infinite",
+      },
   	}
   },
   plugins: [],

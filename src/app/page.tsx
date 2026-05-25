@@ -1,12 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import LoyaltyFeature from "./components/LoyaltyFeature";
 import HowItWorks from "./components/HowItWorks";
 import Footer from "./components/Footer";
 
 export default function Home() {
+  const words = ["craft.", "practice.", "rework.", "taste."];
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % words.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative font-sans overflow-x-hidden bg-white">
       <Navbar />
@@ -26,7 +36,10 @@ export default function Home() {
           {/* Text block — left side */}
           <div className="w-full md:w-1/2 flex flex-col items-start">
             <h1 className="font-serif-custom text-4xl sm:text-6xl md:text-[3.8rem] lg:text-[4.4rem] text-neutral-950 leading-[1.1] tracking-tight font-bold mb-8">
-              A <em className="italic font-bold text-neutral-400">prompt</em> needs more than words. <br className="hidden lg:block"/>It needs a <span className="text-neutral-500">craft.</span>
+              A <em className="italic font-bold animated-gradient-text">prompt</em> needs more than words. <br className="hidden lg:block"/>It needs a{" "}
+              <span className="animated-gradient-text transition-opacity duration-500 inline-block min-w-[5em] pr-2">
+                {words[currentWordIndex]}
+              </span>
             </h1>
 
             <p className="text-base sm:text-xl text-neutral-600 font-light leading-relaxed max-w-md mb-10">
@@ -63,19 +76,8 @@ export default function Home() {
 
       {/* ═══ VIDEO DEMO SECTION ═══ */}
       <section className="relative w-full z-30 flex flex-col justify-center items-center pt-4 sm:pt-8 pb-20 px-4 sm:px-8 -mt-6 sm:-mt-10">
-        <div className="w-full max-w-5xl rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] bg-white border border-neutral-200">
-          <video
-            src="/demo-video.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-auto object-cover"
-          />
-        </div>
-
         {/* Product Hunt Banner Card */}
-        <div className="mt-14 w-full max-w-4xl bg-white/60 backdrop-blur-md border border-neutral-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group">
+        <div className="mb-10 w-full max-w-4xl bg-white/60 backdrop-blur-md border border-neutral-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group">
           <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
             <div className="flex items-center gap-2.5 mb-2">
               <span className="flex h-2.5 w-2.5 relative">
@@ -94,6 +96,17 @@ export default function Home() {
               <img alt="PromptLib - Pinterest for Image Prompts | Product Hunt" width="250" height="54" src="/ph-badge.svg" className="block" />
             </a>
           </div>
+        </div>
+
+        <div className="w-full max-w-5xl rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] bg-white border border-neutral-200">
+          <video
+            src="/demo-video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-auto object-cover"
+          />
         </div>
       </section>
 
