@@ -65,6 +65,13 @@ export default function Footer() {
                 Get one masterfully curated prompt template in your inbox every Thursday. Zero spam.
               </p>
             </div>
+
+            {/* Product Hunt Badge */}
+            <div className="pt-4">
+              <a href="https://www.producthunt.com/products/promptlib?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-promptlib" target="_blank" rel="noopener noreferrer">
+                <img alt="PromptLib - Pinterest for Image Prompts | Product Hunt" width="250" height="54" src="/ph-badge.svg" />
+              </a>
+            </div>
           </div>
 
           {/* Links Column Group */}

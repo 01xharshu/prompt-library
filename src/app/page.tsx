@@ -62,7 +62,7 @@ export default function Home() {
       </section>
 
       {/* ═══ VIDEO DEMO SECTION ═══ */}
-      <section className="relative w-full z-30 flex justify-center items-center pt-4 sm:pt-8 pb-20 px-4 sm:px-8 -mt-6 sm:-mt-10">
+      <section className="relative w-full z-30 flex flex-col justify-center items-center pt-4 sm:pt-8 pb-20 px-4 sm:px-8 -mt-6 sm:-mt-10">
         <div className="w-full max-w-5xl rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] bg-white border border-neutral-200">
           <video
             src="/demo-video.mp4"
@@ -72,6 +72,28 @@ export default function Home() {
             playsInline
             className="w-full h-auto object-cover"
           />
+        </div>
+
+        {/* Product Hunt Banner Card */}
+        <div className="mt-14 w-full max-w-4xl bg-white/60 backdrop-blur-md border border-neutral-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group">
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="flex h-2.5 w-2.5 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#da552f] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#da552f]"></span>
+              </span>
+              <h3 className="font-bold tracking-tight text-neutral-900 text-lg sm:text-xl">We are live on Product Hunt!</h3>
+            </div>
+            <p className="text-sm text-neutral-500 max-w-md leading-relaxed">
+              Join the community and support our launch. We'd love to hear your feedback on the new curated prompt library.
+            </p>
+          </div>
+          
+          <div className="flex-shrink-0 hover:scale-[1.03] active:scale-95 transition-all duration-200 shadow-sm rounded-xl overflow-hidden">
+            <a href="https://www.producthunt.com/products/promptlib?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-promptlib" target="_blank" rel="noopener noreferrer">
+              <img alt="PromptLib - Pinterest for Image Prompts | Product Hunt" width="250" height="54" src="/ph-badge.svg" className="block" />
+            </a>
+          </div>
         </div>
       </section>
 

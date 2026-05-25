@@ -33,7 +33,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-50 w-full flex justify-center px-4 sm:px-6 pointer-events-none">
+    <div className="fixed top-10 left-0 right-0 z-50 w-full flex justify-center px-4 sm:px-6 pointer-events-none">
       <nav className="pointer-events-auto flex items-center gap-3 sm:gap-12 glass-noise-pill rounded-full shadow-[0_12px_36px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.01)] px-3.5 sm:px-6 py-2 sm:py-2.5 transition-all duration-300">
         {/* Brand Logo / Title */}
         <Link href="/" className="flex items-center gap-2 select-none group">
