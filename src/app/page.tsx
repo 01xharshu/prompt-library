@@ -61,6 +61,20 @@ export default function Home() {
         />
       </section>
 
+      {/* ═══ VIDEO DEMO SECTION ═══ */}
+      <section className="relative w-full z-30 flex justify-center items-center pb-20 px-4 sm:px-8 -mt-10 sm:-mt-20">
+        <div className="w-full max-w-5xl rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] bg-white border border-neutral-200">
+          <video
+            src="/demo-video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      </section>
+
       {/* ═══ ENDURING LOYALTY FEATURE SECTION ═══ */}
       <LoyaltyFeature />
 
