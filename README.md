@@ -1,4 +1,4 @@
-# Premium Next.js Prompt Library Landing Page
+# Prompt Library Landing Page
 
 A state-of-the-art, high-end, responsive Next.js landing page built with **React 18**, **Tailwind CSS**, and **Framer Motion**. It is configured to run flawlessly offline and features premium styling including glassmorphism, progressive blurs, interactive copy mechanics, and real-time live feed updates.
 
